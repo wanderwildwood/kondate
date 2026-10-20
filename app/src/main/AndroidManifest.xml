@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- To read a recipe page whose address was shared here or typed in, and for nothing else.
+         Nothing is sent but the request for that page. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- To ask the clock app for a timer in cook mode, as Android requires of any app that does. -->
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+
+    <queries>
+        <!-- Notes, which takes the shopping list. -->
+        <package android:name="com.wanderwildwood.oboegaki" />
+        <!-- A clock that starts a timer when asked. -->
+        <intent>
+            <action android:name="android.intent.action.SET_TIMER" />
+        </intent>
+        <!-- The page a recipe came from, in the browser. -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+        <!-- Lets the text-selection menu see other apps' text actions, such as Define from the
+             Dictionary, beside Copy. Without it Android 11+ hides them from this app. -->
+        <intent>
+            <action android:name="android.intent.action.PROCESS_TEXT" />
+            <data android:mimeType="text/plain" />
+        </intent>
+    </queries>
+
+    <!-- Plain http allowed: a few small recipe sites still have nothing else, and a recipe page
+         is public anyway. -->
+    <application
+        android:allowBackup="false"
+        android:icon="@drawable/ic_launcher_mudita"
+        android:roundIcon="@drawable/ic_launcher_mudita"
+        android:label="@string/app_name"
+        android:supportsRtl="false"
+        android:usesCleartextTraffic="true"
+        android:theme="@style/Theme.App">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            android:configChanges="keyboardHidden|orientation|screenSize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!-- A recipe page shared from the browser: its address, read and kept. -->
+            <intent-filter android:label="@string/share_label">
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+
+            <!-- A file of recipes, saved from here or written by another app, opened or shared. -->
+            <intent-filter android:label="@string/share_label">
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/json" />
+                <data android:mimeType="application/ld+json" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="content" />
+                <data android:mimeType="application/json" />
+                <data android:mimeType="application/ld+json" />
+            </intent-filter>
+        </activity>
+
+    </application>
+
+</manifest>
