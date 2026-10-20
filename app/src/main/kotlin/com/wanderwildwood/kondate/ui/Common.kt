@@ -25,6 +25,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.mudita.mmd.components.buttons.ButtonMMD
 import com.mudita.mmd.components.buttons.OutlinedButtonMMD
@@ -177,6 +179,7 @@ fun Field(
     words: Boolean = true,
     lines: Int = 1,
     url: Boolean = false,
+    secret: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier.fillMaxWidth().padding(vertical = 6.dp)) {
@@ -191,14 +194,16 @@ fun Field(
             maxLines = if (singleLine) 1 else lines * 2,
             placeholder = hint?.let { { TextMMD(text = it, style = MaterialTheme.typography.labelSmall) } },
             keyboardOptions = KeyboardOptions(
-                capitalization = if (words && !number && !phone && !url) KeyboardCapitalization.Sentences else KeyboardCapitalization.None,
+                capitalization = if (words && !number && !phone && !url && !secret) KeyboardCapitalization.Sentences else KeyboardCapitalization.None,
                 keyboardType = when {
+                    secret -> KeyboardType.Password
                     url -> KeyboardType.Uri
                     phone -> KeyboardType.Phone
                     number -> KeyboardType.Number
                     else -> KeyboardType.Text
                 },
             ),
+            visualTransformation = if (secret) PasswordVisualTransformation() else VisualTransformation.None,
             modifier = Modifier.fillMaxWidth().textActions(),
         )
     }

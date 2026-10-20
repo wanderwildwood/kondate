@@ -2,14 +2,22 @@
 
 Recipes collects nothing about you and sends nothing anywhere of its own accord.
 
-It goes online for one thing: to fetch a recipe page whose address you shared with it or typed
-into it. That one page is fetched, as a phone's browser would ask for it; no pictures or scripts
-from it are fetched, and nothing about you or your recipes is sent with the request. The site
-sees a request for its page, as it would from any browser.
+It goes online for two things. One is to fetch a recipe page whose address you shared with it or
+typed into it. That one page is fetched, as a phone's browser would ask for it; no pictures or
+scripts from it are fetched, and nothing about you or your recipes is sent with the request. The
+site sees a request for its page, as it would from any browser.
+
+The other is Nextcloud, and only once you have signed in to one in Settings: then your recipes are
+synced with your own Nextcloud, in the folder Nextcloud Cookbook uses, and go nowhere else. The
+app also asks Cookbook on that server which folder it uses, and after a sync asks it to look at
+the folder again; neither carries anything but the request. Sign-in is on the server's own page
+in your browser, which gives this phone an app password of its own; you can revoke it from the
+server's security settings. Before you sign in, and after you sign out, nothing goes there.
 
 It keeps, in its own private storage on the phone: your recipes, one small file each, which
-ingredients you have ticked in each, and whether the letters and page dots are shown beside the
-list. None of it is backed up by the app, and uninstalling it removes all of it. Settings can
+ingredients you have ticked in each (never synced), whether the letters and page dots are shown
+beside the list, and, while you are signed in, the Nextcloud address, your login name, the app
+password, and a note of what was last synced. None of it is backed up by the app, and uninstalling it removes all of it. Settings can
 save every recipe to a file you choose, and bring recipes in from one.
 
 It hands something to another app only when you press for it: a shopping list to Notes (or, with
@@ -19,7 +27,8 @@ opens a web address in your browser, and only when you press it.
 
 ## Permissions
 
-- **Internet** — to fetch the recipe page you send it, and for nothing else.
+- **Internet** — to fetch the recipe page you send it, and to sync with your Nextcloud once you
+  have signed in to one; for nothing else.
 - **Set an alarm** (`com.android.alarm.permission.SET_ALARM`) — Android requires it of any app
   that asks the clock app for a timer. It is not one you are asked for, and it lets the app ask
   for a timer, not read your alarms.

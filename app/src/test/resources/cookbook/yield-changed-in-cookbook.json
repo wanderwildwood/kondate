@@ -1,0 +1,1 @@
+{"@context":"http:\/\/schema.org","@type":"Recipe","name":"Pancakes","recipeYield":8,"recipeYieldText":"12 pancakes","recipeIngredient":["2 eggs"],"recipeInstructions":[{"@type":"HowToStep","text":"Whisk and fry."}],"dateModified":"2026-10-11T08:00:00+0000"}

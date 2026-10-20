@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -23,6 +24,7 @@ import com.mudita.mmd.components.text.TextMMD
 import com.mudita.mmd.components.top_app_bar.TopAppBarMMD
 import com.wanderwildwood.kondate.R
 import com.wanderwildwood.kondate.data.Store
+import com.wanderwildwood.kondate.sync.Cloud
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -34,10 +36,12 @@ import java.time.LocalDate
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(store: Store, onBack: () -> Unit, onAbout: () -> Unit, onOpen: (String) -> Unit) {
+fun SettingsScreen(store: Store, onBack: () -> Unit, onAbout: () -> Unit, onOpen: (String) -> Unit, onNextcloud: () -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val all by store.all.collectAsStateWithLifecycle()
+    val cloud = remember { Cloud.get(context) }
+    val account by cloud.account.collectAsStateWithLifecycle()
 
     val export = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
         if (uri == null) return@rememberLauncherForActivityResult
@@ -70,6 +74,14 @@ fun SettingsScreen(store: Store, onBack: () -> Unit, onAbout: () -> Unit, onOpen
             item(key = "jump") {
                 val jumpShown by rememberListJumpShown()
                 SwitchRow(stringResource(R.string.list_jump_setting), jumpShown) { ListJumpPrefs.setShown(context, it) }
+            }
+            item(key = "nextcloud") {
+                val a = account
+                SettingRow(
+                    stringResource(R.string.cloud_title),
+                    if (a == null) stringResource(R.string.cloud_off) else stringResource(R.string.cloud_signed_in, a.user, a.server.removePrefix("https://")),
+                    onClick = onNextcloud,
+                )
             }
             item(key = "files") { Heading(stringResource(R.string.settings_files)) }
             item(key = "export") {

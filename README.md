@@ -41,6 +41,31 @@ on any Android 12 device.
 - **In and out of a file.** Settings saves every recipe to one file, and brings recipes in from
   one. A single recipe can be saved as a file or sent as text from its ⋮. A recipe file opened
   from Files, or shared from another app, is brought in.
+- **Sync with your own Nextcloud**, if you sign in to one (Settings → Nextcloud). The recipes go
+  in the folder [Nextcloud Cookbook](https://apps.nextcloud.com/apps/cookbook) keeps its own in,
+  in its layout, so they show in Cookbook too, and a recipe added or changed there comes back
+  here. It is off until you sign in, and the app works the same without it.
+
+## Nextcloud
+
+Signing in goes through Nextcloud's own login page in the browser, as its apps do, and the server
+hands the phone an app password of its own, which can be revoked from the server's security
+settings without touching your real one. A phone with no browser can take an app password typed
+in instead. The folder starts as Cookbook's own (it asks Cookbook which), and can be changed.
+
+The layout is Cookbook's: one folder per recipe, named after the recipe, holding `recipe.json`.
+A recipe syncs when the app is opened, a few seconds after it is saved or deleted, and when you
+press Sync now. Each side's changes since the last sync are followed:
+
+- changed on one side: the other side takes the change;
+- changed on both: both are kept — the server's under the recipe's name, the phone's as
+  "… (phone)" beside it — unless the two now say the same thing;
+- deleted on one side and not changed on the other: deleted on both. A change beats a deletion:
+  a recipe deleted here but changed in Cookbook comes back, and the other way round;
+- deleting on the phone deletes the recipe's `recipe.json`, and its folder only when nothing else
+  is in it. A picture Cookbook downloaded beside the recipe is never deleted.
+
+Which ingredients are ticked stays on the phone. Pictures are not synced either way.
 
 ## The file
 
@@ -50,25 +75,38 @@ in. Each is one small file in the app's own storage. An export is a JSON-LD docu
 recipe in its `@graph`; bringing it back replaces the recipes it holds and adds the rest. The one
 field of the app's own is `notes`, since schema.org has nowhere for "less salt next time".
 
+In Nextcloud the recipe is written the way Cookbook writes its own: the method as a flat list,
+a part of it as a line `## For the sauce`, and the yield as a whole number. Three fields are the
+app's own there: `notes`, `identifier` (the app's id for the recipe) and `recipeYieldText`, the
+yield in words ("12 pancakes") beside Cookbook's number, read back only while that number has not
+been changed in Cookbook. Cookbook leaves fields it does not know alone, and its editor keeps
+them, so all three survive an edit there. Whatever Cookbook adds that this app does not show
+(tools, nutrition) is kept when the phone writes the recipe back.
+
 ## What it does not do
 
 - **No pictures.** A page's picture address is kept with the recipe, but nothing is downloaded
   or shown. On this screen a photograph of a stew is a grey shape, and the recipe is the words.
-- **No sync, no account.** Not yet with Nextcloud Cookbook either; the recipes are kept in its
-  shape so that it can be added.
+- **No account of its own.** The only sync is with a Nextcloud of your own, and only once you
+  sign in to it.
 - Times are found in English words ("10 minutes", "an hour and a half"). A recipe in another
   language reads and scales, but its steps offer no timer buttons.
 - Scaling is arithmetic, not cooking: three eggs for half the servings comes out as 1 1/2.
 
 ## Privacy
 
-Recipes goes online for one thing: to fetch a recipe page whose address you shared with it or
-typed in. That page is fetched once, as a phone's browser would ask for it, and nothing else is
-sent — no pictures are fetched, no scripts run, nothing about you or your recipes goes with the
+Recipes goes online for two things. One is to fetch a recipe page whose address you shared with
+it or typed in. That page is fetched once, as a phone's browser would ask for it, and nothing else
+is sent — no pictures are fetched, no scripts run, nothing about you or your recipes goes with the
 request. The site sees the request for its page, as it would from a browser.
 
-Everything else stays on the phone, in the app's own storage: the recipes and which ingredients
-are ticked. There are no accounts, no analytics and no adverts. The app does not back itself up;
+The other is Nextcloud, and only when you have signed in to one: then your recipes go to your own
+Nextcloud, and to nowhere else. Nothing goes there before you sign in, and after you sign out
+nothing more does; the recipes already there stay until you delete them there.
+
+Everything else stays on the phone, in the app's own storage: the recipes, which ingredients are
+ticked, and, when you are signed in, the Nextcloud address, login name and the app password it
+gave this phone. There are no accounts of the app's own, no analytics and no adverts. The app does not back itself up;
 uninstalling it removes everything, so save your recipes to a file first if you want them.
 
 A timer goes to the clock app and a shopping list to Notes only when you press for one. The
@@ -88,7 +126,11 @@ release build comes out unsigned rather than wrongly signed.
 `./gradlew testDebugUnitTest` runs the tests: the page reader against made-up pages in the
 shapes recipe sites use (a WordPress `@graph`, a plain array, a block with stray line breaks,
 microdata, a page with no recipe), a recipe written and read back, times read from ISO-8601 and
-from the words of a step, and amounts scaled.
+from the words of a step, and amounts scaled; and for Nextcloud, recipes read from and written to
+Cookbook's `recipe.json` (made-up files in the shapes Cookbook leaves), folder names made by
+Cookbook's rule, and two-way sync against a made-up server held in memory — new on either side,
+edits on one side or both, deletions, a change against a deletion, renames, and a file changed
+under a sync as it writes.
 
 ## Getting it, and keeping it
 

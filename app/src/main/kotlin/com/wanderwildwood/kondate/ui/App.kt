@@ -16,6 +16,7 @@ import com.wanderwildwood.kondate.data.Recipe
 import com.wanderwildwood.kondate.data.Store
 import com.wanderwildwood.kondate.importer.JsonLd
 import com.wanderwildwood.kondate.importer.Reader
+import com.wanderwildwood.kondate.sync.Cloud
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -35,6 +36,7 @@ sealed interface Screen {
     data class Cook(val id: String) : Screen
     data class Reading(val url: String) : Screen
     data object Settings : Screen
+    data object Nextcloud : Screen
 }
 
 @Composable
@@ -119,7 +121,9 @@ fun RecipesApp(incoming: Incoming?, onTaken: () -> Unit) {
             onBack = ::back,
             onAbout = { about = true },
             onOpen = { stack = listOf(Screen.List, Screen.Recipe(it)) },
+            onNextcloud = { go(Screen.Nextcloud) },
         )
+        Screen.Nextcloud -> NextcloudScreen(cloud = Cloud.get(context), onBack = ::back)
     }
     if (about) AboutDialog(onDismiss = { about = false })
 }

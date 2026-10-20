@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.IntentCompat
 import com.mudita.mmd.ThemeMMD
 import com.wanderwildwood.kondate.importer.Reader
+import com.wanderwildwood.kondate.sync.Cloud
 import com.wanderwildwood.kondate.ui.Incoming
 import com.wanderwildwood.kondate.ui.RecipesApp
 import com.wanderwildwood.kondate.ui.monochrome
@@ -26,6 +27,12 @@ class MainActivity : ComponentActivity() {
                 RecipesApp(incoming.value, onTaken = { incoming.value = null })
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // Nothing happens here unless the reader has signed in to a Nextcloud.
+        Cloud.get(this).onOpen()
     }
 
     override fun onNewIntent(intent: Intent) {

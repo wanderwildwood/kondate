@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- To read a recipe page whose address was shared here or typed in, and for nothing else.
-         Nothing is sent but the request for that page. -->
+    <!-- To read a recipe page whose address was shared here or typed in, and, once the reader
+         has signed in to one, to sync with their own Nextcloud. For nothing else. -->
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- To ask the clock app for a timer in cook mode, as Android requires of any app that does. -->
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
@@ -28,7 +28,8 @@
     </queries>
 
     <!-- Plain http allowed: a few small recipe sites still have nothing else, and a recipe page
-         is public anyway. -->
+         is public anyway; and a Nextcloud at home may be reached by its address on the home
+         network, without a certificate. -->
     <application
         android:allowBackup="false"
         android:icon="@drawable/ic_launcher_mudita"
