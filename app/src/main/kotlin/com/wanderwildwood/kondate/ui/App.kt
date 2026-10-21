@@ -11,6 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wanderwildwood.kondate.R
 import com.wanderwildwood.kondate.data.Recipe
 import com.wanderwildwood.kondate.data.Store
@@ -76,6 +77,8 @@ fun RecipesApp(incoming: Incoming?, onTaken: () -> Unit) {
     }
 
     BackHandler(enabled = stack.size > 1) { back() }
+    val cloud = remember { Cloud.get(context) }
+    val account by cloud.account.collectAsStateWithLifecycle()
 
     when (val s = stack.last()) {
         Screen.List -> ListScreen(
@@ -93,6 +96,7 @@ fun RecipesApp(incoming: Incoming?, onTaken: () -> Unit) {
             },
             onSettings = { go(Screen.Settings) },
             onAbout = { about = true },
+            onPull = if (account != null) ({ cloud.syncAndWait() }) else null,
         )
         is Screen.Recipe -> RecipeScreen(
             store = store,

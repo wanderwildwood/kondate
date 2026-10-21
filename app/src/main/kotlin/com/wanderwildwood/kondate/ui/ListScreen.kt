@@ -1,5 +1,6 @@
 package com.wanderwildwood.kondate.ui
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +19,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -37,6 +39,13 @@ import com.wanderwildwood.kondate.R
 import com.wanderwildwood.kondate.data.Recipe
 import com.wanderwildwood.kondate.data.Store
 import com.wanderwildwood.kondate.importer.Reader
+import com.wanderwildwood.kondate.sync.Cloud
+import com.wanderwildwood.kondate.sync.PULLED_LINE_MS
+import com.wanderwildwood.kondate.sync.Pulled
+import com.wanderwildwood.kondate.sync.pulledAfter
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.text.Normalizer
 
 /**
@@ -53,8 +62,26 @@ fun ListScreen(
     onLink: (String) -> Unit,
     onSettings: () -> Unit,
     onAbout: () -> Unit,
+    // A sync with the Nextcloud to run when the list is pulled down from its top, returning the
+    // state it left; null while the recipes are kept only on this phone.
+    onPull: (suspend () -> Cloud.State)? = null,
 ) {
     val context = LocalContext.current
+    var pulled by remember { mutableStateOf<Pulled?>(null) }
+    val pullScope = rememberCoroutineScope()
+    var pulling by remember { mutableStateOf<Job?>(null) }
+    val pull: () -> Unit = {
+        val run = onPull
+        if (run != null && pulling?.isActive != true) {
+            pulling = pullScope.launch {
+                Log.i("kondate", "pulled at the top of the list: syncing")
+                pulled = Pulled.SYNCING
+                pulled = pulledAfter(run())
+                delay(PULLED_LINE_MS)
+                pulled = null
+            }
+        }
+    }
     val all by store.all.collectAsStateWithLifecycle()
     var searching by rememberSaveable { mutableStateOf(false) }
     var query by rememberSaveable { mutableStateOf("") }
@@ -92,6 +119,23 @@ fun ListScreen(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp).focusRequester(focus).textActions(),
                 )
             }
+            pulled?.let { p ->
+                TextMMD(
+                    text = stringResource(
+                        when (p) {
+                            Pulled.SYNCING -> R.string.pull_syncing
+                            Pulled.UP_TO_DATE -> R.string.pull_up_to_date
+                            Pulled.UNREACHABLE -> R.string.pull_unreachable
+                            Pulled.REFUSED -> R.string.pull_refused
+                            Pulled.FAILED -> R.string.pull_failed
+                        },
+                    ),
+                    style = MaterialTheme.typography.labelSmall,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 6.dp),
+                )
+            }
             when {
                 all.isEmpty() -> TextMMD(
                     text = stringResource(R.string.list_empty),
@@ -104,7 +148,11 @@ fun ListScreen(
                     modifier = Modifier.padding(horizontal = 20.dp, vertical = 24.dp),
                 )
                 else -> ListJumpBox(state, remember(shown) { ListJump.Letters(shown.map { it.name }) }) {
-                    PagedColumn(state = state, modifier = Modifier.fillMaxSize()) {
+                    PagedColumn(
+                        state = state,
+                        modifier = Modifier.fillMaxSize(),
+                        onPullAtTop = if (onPull != null) pull else null,
+                    ) {
                         items(shown, key = { it.id }) { r ->
                             Column(
                                 Modifier

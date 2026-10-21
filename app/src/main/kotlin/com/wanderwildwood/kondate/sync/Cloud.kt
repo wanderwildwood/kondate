@@ -73,6 +73,17 @@ class Cloud private constructor(context: Context) {
         scope.launch { sync() }
     }
 
+    /**
+     * A sync now, as the list asks for one when it is pulled down from its top, returning once it
+     * is done with the state it left. Waits for one already running, then runs its own.
+     */
+    suspend fun syncAndWait(): State {
+        if (_account.value == null) return State.OFF
+        pending?.cancel()
+        withContext(Dispatchers.IO) { sync() }
+        return _state.value
+    }
+
     private fun syncSoon() {
         if (_account.value == null) return
         pending?.cancel()

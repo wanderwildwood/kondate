@@ -54,8 +54,9 @@ settings without touching your real one. A phone with no browser can take an app
 in instead. The folder starts as Cookbook's own (it asks Cookbook which), and can be changed.
 
 The layout is Cookbook's: one folder per recipe, named after the recipe, holding `recipe.json`.
-A recipe syncs when the app is opened, a few seconds after it is saved or deleted, and when you
-press Sync now. Each side's changes since the last sync are followed:
+A recipe syncs when the app is opened, a few seconds after it is saved or deleted, when you
+press Sync now, and when the recipe list is pulled down from its top (a line above it says
+"Syncing…", then "Up to date"). Each side's changes since the last sync are followed:
 
 - changed on one side: the other side takes the change;
 - changed on both: both are kept — the server's under the recipe's name, the phone's as

@@ -160,6 +160,11 @@
     <string name="cloud_signed_in">%1$s on %2$s</string>
     <string name="cloud_sync_now">Sync now</string>
     <string name="cloud_syncing">Syncing…</string>
+    <string name="pull_syncing">Syncing…</string>
+    <string name="pull_up_to_date">Up to date</string>
+    <string name="pull_unreachable">Couldn’t reach the Nextcloud. The recipes here are this phone’s copies.</string>
+    <string name="pull_refused">The Nextcloud wouldn’t let this phone in. Sign in again in Settings.</string>
+    <string name="pull_failed">The sync didn’t go through.</string>
     <string name="cloud_never">Not synced yet.</string>
     <!-- %1$s is a date and time -->
     <string name="cloud_last">Last synced %1$s</string>
