@@ -3,7 +3,7 @@
 A recipe book for the [Mudita Kompakt](https://mudita.com/products/kompakt/): recipes saved from
 the pages they were found on or typed in by hand, kept on the phone, and read one step at a time
 at the stove. Built with Mudita's [MMD](https://github.com/mudita/MMD) design system. It installs
-on any Android 12 device.
+on any device with Android 11 or later, Supernote's tablets among them.
 
 *Kondate* is 献立 — the menu, the plan of what is to be cooked.
 

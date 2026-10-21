@@ -16,8 +16,8 @@ android {
         // that: Supernote's tablets run Android 11 (API 30), and it installs there too.
         minSdk = 30
         targetSdk = 31
-        versionCode = 2
-        versionName = "0.2.0"
+        versionCode = 3
+        versionName = "0.2.1"
     }
 
     // A real keystore in signing/ signs every build type when it is present, so the
