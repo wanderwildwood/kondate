@@ -217,7 +217,12 @@ private fun LazyListState.spread(): Spread? {
     val whole = rows.filter { it.index < cut.index && it.offset >= 0 }
     if (whole.isEmpty()) return null
     val last = whole.last()
-    return Spread(whole.first().index, last.index, (bottom - (last.offset + last.size)).coerceAtLeast(0), cut.index, bottom)
+    val room = (bottom - (last.offset + last.size)).coerceAtLeast(0)
+    // Room wider than any row on the page is not what a row that did not fit left behind, but
+    // the start of one far taller than the rest: shared out, it would scatter a few rows over
+    // the screen. They stay as they come, and only the tall row waits for the next page.
+    val share = if (room > whole.maxOf { it.size }) 0 else room
+    return Spread(whole.first().index, last.index, share, cut.index, bottom)
 }
 
 /**
