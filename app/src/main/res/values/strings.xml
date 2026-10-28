@@ -121,9 +121,6 @@
     <!-- Settings -->
 
     <string name="settings_title">Settings</string>
-    <string name="list_jump_setting">Letters and page dots</string>
-    <string name="list_jump_shown">Shown</string>
-    <string name="list_jump_hidden">Hidden</string>
     <string name="settings_files">Files</string>
     <string name="export_all">Save every recipe to a file</string>
     <plurals name="recipe_count">

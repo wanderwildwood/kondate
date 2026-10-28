@@ -147,7 +147,7 @@ fun ListScreen(
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(horizontal = 20.dp, vertical = 24.dp),
                 )
-                else -> ListJumpBox(state, remember(shown) { ListJump.Letters(shown.map { it.name }) }) {
+                else -> {
                     PagedColumn(
                         state = state,
                         modifier = Modifier.fillMaxSize(),
