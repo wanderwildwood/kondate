@@ -5,6 +5,8 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalCursorBlinkEnabled
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.IntentCompat
 import com.mudita.mmd.ThemeMMD
@@ -23,8 +25,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) incoming.value = incomingFrom(intent)
         setContent {
-            ThemeMMD(colorScheme = monochrome) {
-                RecipesApp(incoming.value, onTaken = { incoming.value = null })
+            // A steady cursor: a blinking one is a repaint twice a second on an e-ink panel
+            // for as long as a field has focus.
+            CompositionLocalProvider(LocalCursorBlinkEnabled provides false) {
+                ThemeMMD(colorScheme = monochrome) {
+                    RecipesApp(incoming.value, onTaken = { incoming.value = null })
+                }
             }
         }
     }
