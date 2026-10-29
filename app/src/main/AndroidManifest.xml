@@ -27,16 +27,14 @@
         </intent>
     </queries>
 
-    <!-- Plain http allowed: a few small recipe sites still have nothing else, and a recipe page
-         is public anyway; and a Nextcloud at home may be reached by its address on the home
-         network, without a certificate. -->
+    <!-- No plain http: everything this app asks for goes over https. -->
     <application
         android:allowBackup="false"
         android:icon="@drawable/ic_launcher_mudita"
         android:roundIcon="@drawable/ic_launcher_mudita"
         android:label="@string/app_name"
         android:supportsRtl="false"
-        android:usesCleartextTraffic="true"
+        android:usesCleartextTraffic="false"
         android:theme="@style/Theme.App">
 
         <activity

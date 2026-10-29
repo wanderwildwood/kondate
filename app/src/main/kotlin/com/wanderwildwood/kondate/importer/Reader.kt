@@ -36,14 +36,25 @@ object Reader {
 
     /** Fetches [address] and reads it. Blocking: call it off the main thread. */
     fun read(address: String): Result {
+        val failed = if (isPlain(address)) Result.Failed(NEEDS_HTTPS) else null
         val page = try {
             fetch(address)
         } catch (_: Exception) {
-            return Result.Failed(0)
+            return failed ?: Result.Failed(0)
         }
-        if (page.code !in 200..299) return Result.Failed(page.code)
+        if (page.code !in 200..299) return failed ?: Result.Failed(page.code)
         return fromHtml(page.body, page.url)
     }
+
+    /** [Result.Failed] code for a page that only answers over plain http, which is never used. */
+    const val NEEDS_HTTPS = -1
+
+    /** True for an address that starts with plain http. */
+    fun isPlain(address: String): Boolean = address.trim().startsWith("http://", ignoreCase = true)
+
+    /** The same address over https: this app asks for nothing in plain text. */
+    fun secure(address: String): String =
+        if (isPlain(address)) "https://" + address.trim().substring(7) else address.trim()
 
     private class Page(val code: Int, val body: String, val url: String)
 
@@ -51,12 +62,12 @@ object Reader {
     private const val LIMIT = 4 * 1024 * 1024
 
     /**
-     * The page at [address], following up to five redirects, including from http to https,
-     * which HttpURLConnection will not do by itself. Sites that refuse anything but a browser
+     * The page at [address], following up to five redirects, and always over https: an http address is
+     * tried as https, and a redirect to http is followed as https. Sites that refuse anything but a browser
      * are asked as a phone's browser asks.
      */
     private fun fetch(address: String): Page {
-        var url = URL(address)
+        var url = URL(secure(address))
         repeat(6) {
             val c = url.openConnection() as HttpURLConnection
             try {
@@ -69,7 +80,7 @@ object Reader {
                 val code = c.responseCode
                 if (code in 300..399) {
                     val next = c.getHeaderField("Location") ?: return Page(code, "", url.toString())
-                    url = URL(url, next)
+                    url = URL(secure(URL(url, next).toString()))
                     return@repeat
                 }
                 val stream = if (code in 200..299) c.inputStream else return Page(code, "", url.toString())

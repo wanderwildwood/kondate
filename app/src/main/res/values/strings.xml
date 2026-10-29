@@ -150,6 +150,8 @@
     <string name="cloud_app_password_note">Make one in Nextcloud under Personal settings, Security, Devices and sessions.</string>
     <string name="cloud_waiting">Finish signing in in the browser; this waits for it.</string>
     <string name="cloud_no_browser">There is no browser on this phone. Type an app password instead.</string>
+    <string name="cloud_needs_https">Recipes only signs in to a server over https. Use an address that starts with https://, or type just the name.</string>
+    <string name="read_needs_https">%1$s only answers over plain http, which Recipes does not use. Type the recipe in instead.</string>
     <string name="cloud_unreachable">Could not reach that server.</string>
     <string name="cloud_refused">The server would not take that login name and password.</string>
     <string name="cloud_account">Signed in as</string>

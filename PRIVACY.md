@@ -5,7 +5,10 @@ Recipes collects nothing about you and sends nothing anywhere of its own accord.
 It goes online for two things. One is to fetch a recipe page whose address you shared with it or
 typed into it. That one page is fetched, as a phone's browser would ask for it; no pictures or
 scripts from it are fetched, and nothing about you or your recipes is sent with the request. The
-site sees a request for its page, as it would from any browser.
+site sees a request for its page, as it would from any browser. Everything is asked over https
+only: an address that starts with http is tried as https, and if the site does not answer that
+way the app says so and nothing is sent in plain text. Android is told the same, so the app
+is not able to send plain http at all.
 
 The other is Nextcloud, and only once you have signed in to one in Settings: then your recipes are
 synced with your own Nextcloud, in the folder Nextcloud Cookbook uses, and go nowhere else. The

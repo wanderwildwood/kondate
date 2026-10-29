@@ -45,6 +45,7 @@ object LoginFlow {
     data class Started(val loginUrl: String, val pollUrl: String, val token: String)
 
     fun start(server: String): Started {
+        if (isPlain(server)) throw Refused("needs https")
         val request = Request.Builder()
             .url("${normalise(server)}/index.php/login/v2")
             .post(FormBody.Builder().build())
@@ -90,8 +91,11 @@ object LoginFlow {
     /** What was typed, as an address: "cloud.example" becomes "https://cloud.example". */
     fun normalise(server: String): String {
         val trimmed = server.trim().trimEnd('/')
-        return if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) trimmed else "https://$trimmed"
+        return if (trimmed.startsWith("https://", ignoreCase = true) || isPlain(trimmed)) trimmed else "https://$trimmed"
     }
+
+    /** True when what was typed names plain http, which this app never uses. */
+    fun isPlain(server: String): Boolean = server.trim().startsWith("http://", ignoreCase = true)
 }
 
 /**

@@ -249,7 +249,7 @@ fun ReadingPage(url: String, failed: Int?, onRetry: () -> Unit, onTypeIn: () -> 
                 TextMMD(text = stringResource(R.string.reading, host), style = MaterialTheme.typography.bodyMedium)
             } else {
                 TextMMD(
-                    text = if (failed == 0) stringResource(R.string.read_failed_offline, host) else stringResource(R.string.read_failed_code, host, failed),
+                    text = if (failed == Reader.NEEDS_HTTPS) stringResource(R.string.read_needs_https, host) else if (failed == 0) stringResource(R.string.read_failed_offline, host) else stringResource(R.string.read_failed_code, host, failed),
                     style = MaterialTheme.typography.bodyMedium,
                 )
                 Spacer(Modifier.height(16.dp))

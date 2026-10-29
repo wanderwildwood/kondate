@@ -123,6 +123,10 @@ fun NextcloudScreen(cloud: Cloud, onBack: () -> Unit) {
                 item(key = "sign_in") {
                     WideButton(stringResource(R.string.cloud_sign_in), filled = true) {
                         if (server.isBlank()) return@WideButton
+                        if (LoginFlow.isPlain(server)) {
+                            problem = R.string.cloud_needs_https
+                            return@WideButton
+                        }
                         if (typed) {
                             if (user.isBlank() || password.isBlank()) return@WideButton
                             keep(Account(LoginFlow.normalise(server), user.trim(), password.trim()))
