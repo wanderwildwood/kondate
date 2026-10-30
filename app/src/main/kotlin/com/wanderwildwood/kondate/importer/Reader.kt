@@ -9,7 +9,7 @@ import java.nio.charset.Charset
 /**
  * Reading a recipe from the address of its page: the one thing this app goes online for.
  *
- * The page is fetched once, as a browser would fetch it, and nothing else is: no pictures, no
+ * The page is fetched once, saying plainly that it is this app, and nothing else is: no pictures, no
  * scripts, nothing sent but the request for the page. What comes back is searched for the
  * recipe the page publishes for search engines (JSON-LD), then for the older microdata; a page
  * with neither gives back its title, so the recipe can be typed in under it.
@@ -31,7 +31,9 @@ object Reader {
     fun fromHtml(html: String, url: String): Result {
         JsonLd.recipesInHtml(html, url).firstOrNull()?.let { return Result.Found(it.copy(url = it.url.ifEmpty { url })) }
         Microdata.recipeInHtml(html, url)?.let { return Result.Found(it) }
-        return Result.NoRecipe(Html.title(html))
+        val title = Html.title(html)
+        if (isChallenge(title, html)) return Result.Failed(403)
+        return Result.NoRecipe(title)
     }
 
     /** Fetches [address] and reads it. Blocking: call it off the main thread. */
@@ -44,6 +46,37 @@ object Reader {
         }
         if (page.code !in 200..299) return failed ?: Result.Failed(page.code)
         return fromHtml(page.body, page.url)
+    }
+
+    /**
+     * True when the web server's answer means the site does not let apps read its pages: forbidden,
+     * not signed in, too many requests, or "not acceptable" to a client that is not a browser.
+     * The app does not try to get round it; it says so and offers pasted text instead.
+     */
+    fun refused(code: Int): Boolean = code in REFUSED
+
+    private val REFUSED = setOf(401, 403, 406, 429)
+
+    private val CHALLENGE_TITLES = listOf(
+        "just a moment", "attention required", "access denied", "are you a robot", "are you a human",
+        "security check", "verify you are", "checking your browser", "pardon our interruption", "robot or human",
+    )
+    private val CHALLENGE_MARKERS = listOf("cf-browser-verification", "challenge-platform", "captcha-delivery.com", "px-captcha")
+
+    /** True for the page a bot check answers with (status 200, but not the recipe): treated as a refusal. */
+    fun isChallenge(title: String, html: String): Boolean {
+        val t = title.lowercase()
+        return CHALLENGE_TITLES.any { t.contains(it) } || CHALLENGE_MARKERS.any { html.contains(it, ignoreCase = true) }
+    }
+
+    /**
+     * True when text shared from another app is just a link (perhaps with the page's title), to be read
+     * by address; false for a recipe's words, which may well mention an address of their own.
+     */
+    fun isLinkShare(text: String): Boolean {
+        val url = addressIn(text) ?: return false
+        val rest = text.replace(url, "").trim()
+        return rest.length <= 120 && rest.lines().count { it.isNotBlank() } <= 2
     }
 
     /** [Result.Failed] code for a page that only answers over plain http, which is never used. */
@@ -63,8 +96,8 @@ object Reader {
 
     /**
      * The page at [address], following up to five redirects, and always over https: an http address is
-     * tried as https, and a redirect to http is followed as https. Sites that refuse anything but a browser
-     * are asked as a phone's browser asks.
+     * tried as https, and a redirect to http is followed as https. A site that refuses an app is not
+     * got round: the caller offers pasted text instead.
      */
     private fun fetch(address: String): Page {
         var url = URL(secure(address))
@@ -107,8 +140,7 @@ object Reader {
         return runCatching { if (name.isNullOrEmpty()) Charsets.UTF_8 else Charset.forName(name) }.getOrDefault(Charsets.UTF_8)
     }
 
-    private const val USER_AGENT =
-        "Mozilla/5.0 (Linux; Android 12) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Mobile Safari/537.36"
+    private const val USER_AGENT = "Recipes/0.2.10 (Android; reads one recipe page for its owner)"
 
     private val ADDRESS = Regex("""https?://[^\s<>"']+""", RegexOption.IGNORE_CASE)
 

@@ -57,7 +57,8 @@ fun EditScreen(store: Store, id: String?, draft: Recipe?, note: Int, onDone: (St
         }
     }
 
-    fun changed() = name != start.name || serves != start.recipeYield || prep != minutesText(start.prepTime) ||
+    // A draft made from a page or from pasted text is not yet saved, so leaving it asks.
+    fun changed() = (id == null && draft != null) || name != start.name || serves != start.recipeYield || prep != minutesText(start.prepTime) ||
         cook != minutesText(start.cookTime) || ingredients != start.ingredients.joinToString("\n") ||
         steps != Plain.stepsText(start.steps) || notes != start.notes || url != start.url
 

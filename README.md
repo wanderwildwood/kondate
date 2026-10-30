@@ -20,6 +20,13 @@ on any device with Android 11 or later, Supernote's tablets among them.
   words. Not the pictures, not the life story above the recipe, not the adverts. Most recipe
   sites publish this; a page that does not opens the form with its name and address filled in,
   for the rest to be typed.
+- **Paste recipe text.** Some sites refuse anything that is not a browser (the app says so and
+  does not try to get round it). Open the recipe in your browser, copy its text, and choose
+  Paste recipe text under +, or select the text and Share → Recipes. The first line becomes the
+  name; lines under Ingredients, and under Instructions, Directions, Method, Steps or
+  Preparation, are sorted into the form, Serves/Yield and Prep/Cook/Total fill their boxes, and
+  anything else goes into the notes. You check the draft in the recipe form before saving.
+  A shared link alone still goes to the page reader. Nothing leaves the phone.
 - **Typed in by hand**, as on a card: a name, how many it serves, the times in minutes, the
   ingredients one to a line, the method one step to a line. A line starting with `#` names a
   part of the method, such as `# For the sauce`.
@@ -97,9 +104,10 @@ them, so all three survive an edit there. Whatever Cookbook adds that this app d
 ## Privacy
 
 Recipes goes online for two things. One is to fetch a recipe page whose address you shared with
-it or typed in. That page is fetched once, as a phone's browser would ask for it, and nothing else
+it or typed in. That page is fetched once, saying plainly that it is Recipes, and nothing else
 is sent — no pictures are fetched, no scripts run, nothing about you or your recipes goes with the
-request. The site sees the request for its page, as it would from a browser.
+request. The site sees a request for its page from an app called Recipes. Pasted or shared recipe text
+is read on the phone and goes nowhere.
 
 The other is Nextcloud, and only when you have signed in to one: then your recipes go to your own
 Nextcloud, and to nowhere else. Nothing goes there before you sign in, and after you sign out

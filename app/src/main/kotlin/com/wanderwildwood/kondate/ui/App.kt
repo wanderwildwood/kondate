@@ -16,6 +16,7 @@ import com.wanderwildwood.kondate.R
 import com.wanderwildwood.kondate.data.Recipe
 import com.wanderwildwood.kondate.data.Store
 import com.wanderwildwood.kondate.importer.JsonLd
+import com.wanderwildwood.kondate.importer.PastedRecipe
 import com.wanderwildwood.kondate.importer.Reader
 import com.wanderwildwood.kondate.sync.Cloud
 import kotlinx.coroutines.Dispatchers
@@ -36,6 +37,8 @@ sealed interface Screen {
     data class Edit(val id: String?, val draft: com.wanderwildwood.kondate.data.Recipe? = null, val note: Int = 0) : Screen
     data class Cook(val id: String) : Screen
     data class Reading(val url: String) : Screen
+    /** Recipe text pasted in, to be sorted into a draft. */
+    data object Paste : Screen
     data object Settings : Screen
     data object Nextcloud : Screen
 }
@@ -64,10 +67,10 @@ fun RecipesApp(incoming: Incoming?, onTaken: () -> Unit) {
                     Screen.Reading(i.url)
                 }
             }
-            // Shared words with no address in them: typed in from there.
+            // Shared words (not just a link): sorted into a draft, on the phone.
             is Incoming.Text -> stack = listOf(
                 Screen.List,
-                Screen.Edit(null, Recipe(id = "", name = i.subject, notes = i.text)),
+                Screen.Edit(null, draftFromText(i.subject, i.text), R.string.paste_draft_note),
             )
             is Incoming.File -> {
                 val opened = bringIn(context, store, i.uri)
@@ -85,6 +88,7 @@ fun RecipesApp(incoming: Incoming?, onTaken: () -> Unit) {
             store = store,
             onOpen = { go(Screen.Recipe(it)) },
             onNew = { go(Screen.Edit(null)) },
+            onPaste = { go(Screen.Paste) },
             onLink = { url ->
                 val known = store.byUrl(url)
                 if (known != null) {
@@ -118,6 +122,11 @@ fun RecipesApp(incoming: Incoming?, onTaken: () -> Unit) {
             url = s.url,
             onSaved = { replace(Screen.Recipe(it)) },
             onTypeIn = { draft, note -> replace(Screen.Edit(null, draft, note)) },
+            onPaste = { replace(Screen.Paste) },
+            onBack = ::back,
+        )
+        Screen.Paste -> PasteScreen(
+            onDraft = { text -> replace(Screen.Edit(null, draftFromText("", text), R.string.paste_draft_note)) },
             onBack = ::back,
         )
         Screen.Settings -> SettingsScreen(
@@ -161,6 +170,7 @@ private fun ReadingScreen(
     url: String,
     onSaved: (String) -> Unit,
     onTypeIn: (Recipe, Int) -> Unit,
+    onPaste: () -> Unit,
     onBack: () -> Unit,
 ) {
     var failed by remember(url) { mutableStateOf<Int?>(null) }
@@ -173,5 +183,14 @@ private fun ReadingScreen(
             is Reader.Result.Failed -> failed = r.code
         }
     }
-    ReadingPage(url = url, failed = failed, onRetry = { attempt++ }, onTypeIn = { onTypeIn(Recipe(id = "", name = "", url = url), 0) }, onBack = onBack)
+    ReadingPage(url = url, failed = failed, onRetry = { attempt++ }, onTypeIn = { onTypeIn(Recipe(id = "", name = "", url = url), 0) }, onPaste = onPaste, onBack = onBack)
+}
+
+/**
+ * The draft for text that arrived by sharing or pasting. A subject the sharing app gave (a page
+ * title, say) is the name only when the text itself has no first line to be one.
+ */
+fun draftFromText(subject: String, text: String): Recipe {
+    val r = PastedRecipe.parse(text)
+    return if (r.name.isBlank()) r.copy(name = subject.trim()) else r
 }

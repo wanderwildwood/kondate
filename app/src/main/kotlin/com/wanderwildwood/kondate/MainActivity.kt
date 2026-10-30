@@ -57,7 +57,7 @@ class MainActivity : ComponentActivity() {
             Intent.ACTION_SEND -> {
                 IntentCompat.getParcelableExtra(intent, Intent.EXTRA_STREAM, Uri::class.java)?.let { return Incoming.File(it) }
                 val text = intent.getStringExtra(Intent.EXTRA_TEXT) ?: return null
-                Reader.addressIn(text)?.let { Incoming.Link(it) }
+                Reader.addressIn(text)?.takeIf { Reader.isLinkShare(text) }?.let { Incoming.Link(it) }
                     ?: Incoming.Text(intent.getStringExtra(Intent.EXTRA_SUBJECT).orEmpty(), text)
             }
             Intent.ACTION_VIEW -> intent.data?.let { uri ->

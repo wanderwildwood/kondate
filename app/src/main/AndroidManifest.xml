@@ -50,7 +50,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <!-- A recipe page shared from the browser: its address, read and kept. -->
+            <!-- A recipe page shared from the browser (its address, read and kept), or the recipe's selected
+                 text shared from it (a draft, made on the phone). -->
             <intent-filter android:label="@string/share_label">
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />

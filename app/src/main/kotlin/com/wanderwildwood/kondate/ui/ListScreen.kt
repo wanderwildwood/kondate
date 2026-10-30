@@ -28,6 +28,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -59,6 +60,7 @@ fun ListScreen(
     store: Store,
     onOpen: (String) -> Unit,
     onNew: () -> Unit,
+    onPaste: () -> Unit,
     onLink: (String) -> Unit,
     onSettings: () -> Unit,
     onAbout: () -> Unit,
@@ -188,6 +190,10 @@ fun ListScreen(
                 adding = false
                 askLink = true
             }
+            WideButton(stringResource(R.string.new_paste)) {
+                adding = false
+                onPaste()
+            }
             Spacer(Modifier.height(8.dp))
             TextMMD(text = stringResource(R.string.new_share_hint), style = MaterialTheme.typography.labelSmall)
         }
@@ -233,7 +239,7 @@ private fun LinkDialog(onDismiss: () -> Unit, onRead: (String) -> Unit) {
 /** The page being read, or why it could not be. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReadingPage(url: String, failed: Int?, onRetry: () -> Unit, onTypeIn: () -> Unit, onBack: () -> Unit) {
+fun ReadingPage(url: String, failed: Int?, onRetry: () -> Unit, onTypeIn: () -> Unit, onPaste: () -> Unit, onBack: () -> Unit) {
     val host = remember(url) { runCatching { java.net.URI(url).host?.removePrefix("www.") }.getOrNull() ?: url }
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
@@ -247,6 +253,12 @@ fun ReadingPage(url: String, failed: Int?, onRetry: () -> Unit, onTypeIn: () -> 
         Column(Modifier.padding(padding).padding(horizontal = 20.dp, vertical = 16.dp)) {
             if (failed == null) {
                 TextMMD(text = stringResource(R.string.reading, host), style = MaterialTheme.typography.bodyMedium)
+            } else if (Reader.refused(failed)) {
+                TextMMD(text = stringResource(R.string.read_refused), style = MaterialTheme.typography.bodyMedium)
+                Spacer(Modifier.height(16.dp))
+                HouseButton(stringResource(R.string.paste_title), onPaste, Modifier.fillMaxWidth(), on = true)
+                Spacer(Modifier.height(8.dp))
+                HouseButton(stringResource(R.string.cancel), onBack, Modifier.fillMaxWidth())
             } else {
                 TextMMD(
                     text = if (failed == Reader.NEEDS_HTTPS) stringResource(R.string.read_needs_https, host) else if (failed == 0) stringResource(R.string.read_failed_offline, host) else stringResource(R.string.read_failed_code, host, failed),
@@ -273,3 +285,50 @@ private fun matching(all: List<Recipe>, query: String): List<Recipe> {
 private val MARKS = Regex("\\p{Mn}+")
 
 private fun fold(s: String) = Normalizer.normalize(s.lowercase(), Normalizer.Form.NFD).replace(MARKS, "")
+
+/**
+ * Recipe text pasted in: a big plain box, and a button that sorts it into a draft for the
+ * recipe form. Nothing leaves the phone.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PasteScreen(onDraft: (String) -> Unit, onBack: () -> Unit) {
+    var text by rememberSaveable { mutableStateOf("") }
+    var empty by remember { mutableStateOf(false) }
+    val focus = remember { FocusRequester() }
+    LaunchedEffect(Unit) { focus.requestFocus() }
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.surface,
+        topBar = {
+            TopAppBarMMD(
+                title = { TextMMD(text = stringResource(R.string.paste_title)) },
+                navigationIcon = { BarButton(Icons.Back, stringResource(R.string.cd_back), onBack) },
+            )
+        },
+    ) { padding ->
+        Column(Modifier.padding(padding).fillMaxSize().padding(horizontal = 20.dp, vertical = 8.dp)) {
+            TextMMD(text = stringResource(R.string.paste_help), style = MaterialTheme.typography.labelSmall)
+            Spacer(Modifier.height(8.dp))
+            TextFieldMMD(
+                value = text,
+                onValueChange = {
+                    text = it
+                    empty = false
+                },
+                singleLine = false,
+                textStyle = MaterialTheme.typography.bodyMedium,
+                placeholder = { TextMMD(text = stringResource(R.string.paste_hint), style = MaterialTheme.typography.labelSmall) },
+                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
+                modifier = Modifier.fillMaxWidth().weight(1f).focusRequester(focus).textActions(),
+            )
+            if (empty) TextMMD(text = stringResource(R.string.paste_empty), style = MaterialTheme.typography.labelSmall, modifier = Modifier.padding(top = 4.dp))
+            Spacer(Modifier.height(8.dp))
+            HouseButton(
+                stringResource(R.string.paste_make),
+                { if (text.isBlank()) empty = true else onDraft(text) },
+                Modifier.fillMaxWidth(),
+                on = true,
+            )
+        }
+    }
+}

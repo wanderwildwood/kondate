@@ -18,7 +18,7 @@
     <!-- ============================================================ -->
     <!-- The list -->
 
-    <string name="list_empty">No recipes yet. Share a recipe page here from the browser, or press + to type one in.</string>
+    <string name="list_empty">No recipes yet. Share a recipe page or its text here from the browser, or press + to type one in or paste it.</string>
     <string name="search_hint">Name or ingredient</string>
     <string name="search_none">No recipe has that.</string>
     <string name="untitled">Untitled</string>
@@ -30,7 +30,15 @@
     <string name="new_recipe">New recipe</string>
     <string name="new_type_in">Type one in</string>
     <string name="new_from_link">From a page’s address</string>
-    <string name="new_share_hint">A page can also be shared here from the browser.</string>
+    <string name="new_share_hint">A page, or the recipe’s text selected in the browser, can also be shared here.</string>
+    <string name="new_paste">Paste recipe text</string>
+    <string name="paste_title">Paste recipe text</string>
+    <string name="paste_help">Copy the recipe from the browser or an email, and paste it here. The first line becomes the name; the Ingredients and the Method (or Instructions, Directions, Steps) are sorted out for you, and anything else goes into the notes.</string>
+    <string name="paste_hint">Paste the recipe here</string>
+    <string name="paste_make">Make a draft</string>
+    <string name="paste_empty">Nothing pasted yet.</string>
+    <string name="paste_draft_note">A draft made from the pasted text. Check each part, fix what is off, then press Save.</string>
+    <string name="read_refused">That site does not let apps read its pages. Open the recipe in your browser, copy the recipe text, and choose Paste recipe text.</string>
     <string name="link_title">Address of the recipe page</string>
     <string name="link_wrong">That is not a web address.</string>
     <string name="link_read">Read the page</string>
@@ -185,7 +193,7 @@
     <string name="about_title">Recipes %1$s</string>
     <string name="about_what">Recipes kept on this phone. It goes online to read a recipe page you send it, keeping the words and not the pictures, and to sync with your own Nextcloud if you sign in to one.</string>
     <string name="about_privacy_head">Privacy</string>
-    <string name="about_privacy">Your recipes stay on this phone. The app collects nothing about you and has no ads or analytics. It goes online only to read a recipe page whose address you sent it (one page, no pictures or scripts, only over https) and, once you sign in to your own Nextcloud, to sync your recipes with it. The Nextcloud app password is kept on the phone, sealed with a key that cannot leave it; you can revoke it from the server. Backups and exports go only where you choose to save them.</string>
+    <string name="about_privacy">Your recipes stay on this phone. The app collects nothing about you and has no ads or analytics. It goes online only to read a recipe page whose address you sent it (one page, no pictures or scripts, only over https, saying plainly that it is this app). Recipe text you paste or share here never leaves the phone and, once you sign in to your own Nextcloud, to sync your recipes with it. The Nextcloud app password is kept on the phone, sealed with a key that cannot leave it; you can revoke it from the server. Backups and exports go only where you choose to save them.</string>
     <string name="about_terms_head">Terms</string>
     <string name="about_terms">This app is free software under the GNU General Public License v3. It comes with no warranty: use it at your own risk. A recipe page is saved for your own use only; the recipe stays its writer\'s.</string>
     <string name="about_no_browser_address">No browser is installed. The address is %1$s.</string>
