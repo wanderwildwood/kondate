@@ -140,9 +140,10 @@ fun NextcloudScreen(cloud: Cloud, onBack: () -> Unit) {
                                     problem = R.string.cloud_unreachable
                                     return@launch
                                 }
-                                val opened = runCatching {
-                                    context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(started.loginUrl)))
-                                }.isSuccess
+                                val opened = isRealBrowserFor(context, started.loginUrl) &&
+                                    runCatching {
+                                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(started.loginUrl)))
+                                    }.isSuccess
                                 if (!opened) {
                                     problem = R.string.cloud_no_browser
                                     typed = true

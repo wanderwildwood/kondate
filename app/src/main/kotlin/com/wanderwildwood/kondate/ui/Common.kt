@@ -123,7 +123,7 @@ fun CheckRow(title: String, checked: Boolean, onChange: (Boolean) -> Unit) {
 
 /**
  * A row that asks once, in its own face: the first press arms it and changes what it says,
- * the second does it. It disarms itself after four seconds, so a stray press does not leave
+ * the second does it. It disarms itself after six seconds, so a stray press does not leave
  * a live trigger for whoever picks the phone up next.
  */
 @Composable
@@ -131,7 +131,7 @@ fun ArmedRow(label: String, armedLabel: String, onConfirmed: () -> Unit) {
     var armed by remember { mutableStateOf(false) }
     LaunchedEffect(armed) {
         if (!armed) return@LaunchedEffect
-        delay(4000)
+        delay(6000)
         armed = false
     }
     Row(

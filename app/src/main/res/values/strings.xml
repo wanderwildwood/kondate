@@ -184,6 +184,11 @@
 
     <string name="about_title">Recipes %1$s</string>
     <string name="about_what">Recipes kept on this phone. It goes online to read a recipe page you send it, keeping the words and not the pictures, and to sync with your own Nextcloud if you sign in to one.</string>
+    <string name="about_privacy_head">Privacy</string>
+    <string name="about_privacy">Your recipes stay on this phone. The app collects nothing about you and has no ads or analytics. It goes online only to read a recipe page whose address you sent it (one page, no pictures or scripts, only over https) and, once you sign in to your own Nextcloud, to sync your recipes with it. The Nextcloud app password is kept on the phone, sealed with a key that cannot leave it; you can revoke it from the server. Backups and exports go only where you choose to save them.</string>
+    <string name="about_terms_head">Terms</string>
+    <string name="about_terms">This app is free software under the GNU General Public License v3. It comes with no warranty: use it at your own risk. A recipe page is saved for your own use only; the recipe stays its writer\'s.</string>
+    <string name="about_no_browser_address">No browser is installed. The address is %1$s.</string>
     <string name="about_licence">GNU General Public License v3</string>
     <string name="about_icons">Icons from Material Symbols, Apache 2.0</string>
     <string name="about_feed_the_llamas">feed the llamas</string>
@@ -195,4 +200,16 @@
     <string name="folio_page">Page %1$d of %2$d</string>
     <string name="folio_go">Go</string>
     <string name="folio_cancel">Cancel</string>
+    <!-- Licences page, reached from About -->
+    <string name="licences_title">Licences</string>
+    <string name="licences_source_heading">Source code</string>
+    <string name="licences_source">Source: %1$s</string>
+    <string name="licences_licence_heading">Licence</string>
+    <string name="licences_licence">Recipes is free software under the GNU General Public License, version 3 only. Copyright wander wildwood. The full text is below.</string>
+    <string name="licences_built_heading">Built with</string>
+    <string name="licences_gpl">GNU General Public License, version 3</string>
+    <string name="licences_apache">Apache License, version 2.0</string>
+    <string name="licences_ofl">SIL Open Font License, version 1.1</string>
+    <string name="licences_no_browser">No browser is installed.</string>
+    <string name="licences_close">Close</string>
 </resources>

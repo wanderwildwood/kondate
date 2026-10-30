@@ -41,11 +41,19 @@ class Cloud private constructor(context: Context) {
     private var pending: Job? = null
     private var lastTry = 0L
 
+    /**
+     * The signed-in account, opened from its sealed form. One saved in plain text by an earlier
+     * version is read once and replaced by the sealed form on the spot.
+     */
+    private fun loadAccount(): Account? {
+        val read = readStoredAccount(prefs.getString(ACCOUNT, null), Secrets::seal, Secrets::open)
+        read.migrated?.let { prefs.edit().putString(ACCOUNT, it).apply() }
+        return read.account
+    }
+
     enum class State { OFF, IDLE, SYNCING, UNREACHABLE, REFUSED, FAILED }
 
-    private val _account = MutableStateFlow(
-        prefs.getString(ACCOUNT, null)?.let { runCatching { Account.fromJson(JSONObject(it)) }.getOrNull() }
-    )
+    private val _account = MutableStateFlow(loadAccount())
     val account: StateFlow<Account?> = _account
 
     private val _folder = MutableStateFlow(prefs.getString(FOLDER, null) ?: DEFAULT_FOLDER)
@@ -134,7 +142,10 @@ class Cloud private constructor(context: Context) {
             CookbookApp.folder(a) ?: DEFAULT_FOLDER
         }
         lock.withLock {
-            prefs.edit().putString(ACCOUNT, a.toJson().toString()).putString(FOLDER, folder).remove(LAST).apply()
+            // Only the sealed form is ever written; with no keystore the account lasts this run only.
+            val sealed = Secrets.seal(a.toJson().toString())
+            prefs.edit().apply { if (sealed != null) putString(ACCOUNT, sealed) else remove(ACCOUNT) }
+                .putString(FOLDER, folder).remove(LAST).apply()
             linksFile.delete()
             _folder.value = folder
             _last.value = 0L

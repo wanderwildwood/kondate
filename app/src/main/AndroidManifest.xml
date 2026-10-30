@@ -17,6 +17,7 @@
         <!-- The page a recipe came from, in the browser. -->
         <intent>
             <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
             <data android:scheme="https" />
         </intent>
         <!-- Lets the text-selection menu see other apps' text actions, such as Define from the

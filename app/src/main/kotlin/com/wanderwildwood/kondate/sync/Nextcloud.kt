@@ -21,6 +21,21 @@ data class Account(val server: String, val user: String, val password: String) {
     }
 }
 
+/**
+ * What to do with the stored account text: the sealed form is opened; the plain JSON an older
+ * version wrote is read as it is and handed back sealed ([migrated]) so the caller can replace it
+ * once. [seal] and [open] are the keystore's, passed in so this part can be tested on its own.
+ */
+data class StoredAccount(val account: Account?, val migrated: String?)
+
+fun readStoredAccount(stored: String?, seal: (String) -> String?, open: (String) -> String?): StoredAccount {
+    if (stored.isNullOrEmpty()) return StoredAccount(null, null)
+    val json = open(stored) ?: return StoredAccount(null, null)
+    val account = runCatching { Account.fromJson(JSONObject(json)) }.getOrNull() ?: return StoredAccount(null, null)
+    val plainBefore = stored.trimStart().startsWith("{")
+    return StoredAccount(account, if (plainBefore) seal(json) else null)
+}
+
 /** The server could not be reached, or its certificate could not be trusted: nothing was sent. */
 class Unreachable(message: String) : IOException(message)
 

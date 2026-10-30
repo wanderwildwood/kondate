@@ -61,7 +61,7 @@ object Elsewhere {
 
     /** The page a recipe came from, in the browser. */
     fun page(context: Context, url: String) {
-        if (!open(context, Intent(Intent.ACTION_VIEW, Uri.parse(url)))) say(context, R.string.about_no_browser)
+        openLink(context, url, context.getString(R.string.about_no_browser_address, url.removePrefix("https://")))
     }
 
     private fun open(context: Context, intent: Intent): Boolean = try {
