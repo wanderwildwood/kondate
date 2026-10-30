@@ -10,7 +10,7 @@ on any device with Android 11 or later, Supernote's tablets among them.
 | | |
 |---|---|
 | ![The recipes, by name](screenshots/1-list.png) | ![A recipe, its ingredients half ticked off](screenshots/2-recipe.png) |
-| ![Cook mode, one step to a screen, with a timer for the time the step names](screenshots/3-cook.png) | ![Typing a recipe in](screenshots/4-edit.png) |
+| ![Cook mode, one step to a screen, with a timer for the time the step names](screenshots/3-cook.png) | ![Paste recipe text, sorted into a draft](screenshots/4-paste.png) |
 
 ## What it does
 
