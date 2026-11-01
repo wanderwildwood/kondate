@@ -52,7 +52,7 @@ fun EditScreen(store: Store, id: String?, draft: Recipe?, note: Int, onDone: (St
     var nameless by remember { mutableStateOf(false) }
     LaunchedEffect(leaving) {
         if (leaving) {
-            delay(4_000L)
+            delay(6_000L)
             leaving = false
         }
     }

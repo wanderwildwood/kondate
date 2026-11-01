@@ -241,7 +241,7 @@ private fun MethodStep(number: Int, text: String) {
 
 /**
  * What else can be done with a recipe: send it as words, keep it as a file, or delete it. The
- * delete asks in its own face, and gives up asking after four seconds.
+ * delete asks in its own face, and gives up asking after six seconds.
  */
 @Composable
 private fun MoreDialog(store: Store, recipe: Recipe, factor: Double, onDismiss: () -> Unit, onDeleted: () -> Unit) {
@@ -250,7 +250,7 @@ private fun MoreDialog(store: Store, recipe: Recipe, factor: Double, onDismiss: 
     var arming by remember { mutableStateOf(false) }
     LaunchedEffect(arming) {
         if (arming) {
-            delay(4_000L)
+            delay(6_000L)
             arming = false
         }
     }
