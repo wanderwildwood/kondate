@@ -27,8 +27,8 @@ beside the list, and, while you are signed in, the Nextcloud address, your login
 password (sealed with a key held in the phone's keystore, not kept as plain text), and a note of what was last synced. None of it is backed up by the app, and uninstalling it removes all of it. Settings can
 save every recipe to a file you choose, and bring recipes in from one.
 
-It hands something to another app only when you press for it: a shopping list to Notes (or, with
-no Notes on the phone, to the app you pick), a timer to the clock app, a recipe as text or a file
+It hands something to another app only when you press for it: a shopping list to Memo (or, with
+no Memo on the phone, to the app you pick), a timer to the clock app, a recipe as text or a file
 to where you send it, the page a recipe came from to your browser. The About dialog's last line
 opens a web address in your browser, and only when you press it.
 

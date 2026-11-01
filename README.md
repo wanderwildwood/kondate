@@ -33,8 +33,8 @@ on any device with Android 11 or later, Supernote's tablets among them.
 - **Ingredients to tick off** as they go in the bowl. The ticks stay until they are cleared, so
   a recipe left halfway is still halfway when it is opened again.
 - **Add to shopping list** sends the ingredients not yet ticked to
-  [Notes](https://github.com/wanderwildwood/oboegaki) as a checklist, titled with the recipe. Without
-  Notes on the phone, the list goes as plain text to whatever app you pick.
+  [Memo](https://github.com/wanderwildwood/oboegaki) as a checklist, titled with the recipe. Without
+  Memo on the phone, the list goes as plain text to whatever app you pick.
 - **More or fewer servings.** The − and + beside "Serves 4" change every amount at the head of an
   ingredient line: 2 cups becomes 3, 1 1/2 tsp becomes 2 1/4, 400g becomes 600g. A line with no
   amount at its head ("salt to taste") is left as it is, and so is a size in the middle of a line
@@ -118,7 +118,7 @@ ticked, and, when you are signed in, the Nextcloud address, login name and the a
 gave this phone. There are no accounts of the app's own, no analytics and no adverts. The app does not back itself up;
 uninstalling it removes everything, so save your recipes to a file first if you want them.
 
-A timer goes to the clock app and a shopping list to Notes only when you press for one. The
+A timer goes to the clock app and a shopping list to Memo only when you press for one. The
 About dialog's last line opens a web address in your browser, and only when you press it.
 [PRIVACY.md](PRIVACY.md) has the same, with the permissions.
 
