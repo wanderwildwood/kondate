@@ -253,8 +253,8 @@ fun ReadingPage(url: String, failed: Int?, onRetry: () -> Unit, onTypeIn: () -> 
         Column(Modifier.padding(padding).padding(horizontal = 20.dp, vertical = 16.dp)) {
             if (failed == null) {
                 TextMMD(text = stringResource(R.string.reading, host), style = MaterialTheme.typography.bodyMedium)
-            } else if (Reader.refused(failed)) {
-                TextMMD(text = stringResource(R.string.read_refused), style = MaterialTheme.typography.bodyMedium)
+            } else if (Reader.refused(failed) || failed == Reader.IS_PDF) {
+                TextMMD(text = if (failed == Reader.IS_PDF) stringResource(R.string.read_pdf, host) else stringResource(R.string.read_refused, failed), style = MaterialTheme.typography.bodyMedium)
                 Spacer(Modifier.height(16.dp))
                 HouseButton(stringResource(R.string.paste_title), onPaste, Modifier.fillMaxWidth(), on = true)
                 Spacer(Modifier.height(8.dp))

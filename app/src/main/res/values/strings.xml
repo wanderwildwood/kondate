@@ -38,7 +38,7 @@
     <string name="paste_make">Make a draft</string>
     <string name="paste_empty">Nothing pasted yet.</string>
     <string name="paste_draft_note">A draft made from the pasted text. Check each part, fix what is off, then press Save.</string>
-    <string name="read_refused">That site does not let apps read its pages. Open the recipe in your browser, copy the recipe text, and choose Paste recipe text.</string>
+    <string name="read_refused">The site answered %1$d: it does not let apps read its pages. Open the recipe in your browser, copy the recipe text, and choose Paste recipe text.</string>
     <string name="link_title">Address of the recipe page</string>
     <string name="link_wrong">That is not a web address.</string>
     <string name="link_read">Read the page</string>
@@ -159,6 +159,7 @@
     <string name="cloud_waiting">Finish signing in in the browser; this waits for it.</string>
     <string name="cloud_no_browser">There is no browser on this phone. Type an app password instead.</string>
     <string name="cloud_needs_https">Recipes only signs in to a server over https. Use an address that starts with https://, or type just the name.</string>
+    <string name="read_pdf">%1$s gave a PDF, which Recipes does not read. Open it in your PDF app and share the text to Recipes, or copy it and choose Paste recipe text.</string>
     <string name="read_needs_https">%1$s only answers over plain http, which Recipes does not use. Type the recipe in instead.</string>
     <string name="cloud_unreachable">Could not reach that server.</string>
     <string name="cloud_refused">The server would not take that login name and password.</string>

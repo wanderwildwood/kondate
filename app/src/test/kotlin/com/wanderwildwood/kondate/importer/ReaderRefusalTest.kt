@@ -9,7 +9,7 @@ class ReaderRefusalTest {
 
     @Test
     fun theseAnswersMeanTheSiteTurnedTheAppAway() {
-        for (code in listOf(401, 403, 406, 429)) assertTrue("$code", Reader.refused(code))
+        for (code in listOf(401, 402, 403, 406, 429)) assertTrue("$code", Reader.refused(code))
         for (code in listOf(0, -1, 404, 410, 500, 503)) assertFalse("$code", Reader.refused(code))
     }
 
