@@ -63,7 +63,6 @@ fun ListScreen(
     onPaste: () -> Unit,
     onLink: (String) -> Unit,
     onSettings: () -> Unit,
-    onAbout: () -> Unit,
     // A sync with the Nextcloud to run when the list is pulled down from its top, returning the
     // state it left; null while the recipes are kept only on this phone.
     onPull: (suspend () -> Cloud.State)? = null,
@@ -104,7 +103,6 @@ fun ListScreen(
                     }
                     BarButton(Icons.Add, stringResource(R.string.cd_add)) { adding = true }
                     BarButton(Icons.Settings, stringResource(R.string.cd_settings), onSettings)
-                    BarButton(Icons.Info, stringResource(R.string.cd_about), onAbout)
                 },
             )
         },

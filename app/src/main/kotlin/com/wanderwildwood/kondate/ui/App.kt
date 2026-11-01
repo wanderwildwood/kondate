@@ -99,7 +99,6 @@ fun RecipesApp(incoming: Incoming?, onTaken: () -> Unit) {
                 }
             },
             onSettings = { go(Screen.Settings) },
-            onAbout = { about = true },
             onPull = if (account != null) ({ cloud.syncAndWait() }) else null,
         )
         is Screen.Recipe -> RecipeScreen(
