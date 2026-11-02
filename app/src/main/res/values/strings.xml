@@ -200,8 +200,7 @@
     <string name="about_no_browser_address">No browser is installed. The address is %1$s.</string>
     <string name="about_licence">GNU General Public License v3</string>
     <string name="about_icons">Icons from Material Symbols, Apache 2.0</string>
-    <string name="about_feed_the_llamas">feed the llamas</string>
-    <string name="about_no_browser">There is no browser on this phone to open that with.</string>
+    <string name="about_feed_the_llamas">Feed the llamas</string>
     <string name="about_close">Close</string>
     <!-- Licences page, reached from About -->
     <string name="licences_title">Licences</string>
