@@ -3,7 +3,10 @@ package com.wanderwildwood.kondate.ui
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -37,6 +40,7 @@ import com.mudita.mmd.components.text.TextMMD
 import com.mudita.mmd.components.text_field.TextFieldMMD
 import com.mudita.mmd.components.top_app_bar.TopAppBarMMD
 import com.wanderwildwood.kondate.R
+import com.wanderwildwood.kondate.data.Labels
 import com.wanderwildwood.kondate.data.Recipe
 import com.wanderwildwood.kondate.data.Store
 import com.wanderwildwood.kondate.importer.Reader
@@ -88,7 +92,14 @@ fun ListScreen(
     var query by rememberSaveable { mutableStateOf("") }
     var adding by remember { mutableStateOf(false) }
     var askLink by remember { mutableStateOf(false) }
-    val shown = remember(all, query, searching) { if (searching) matching(all, query) else all }
+    var label by rememberSaveable { mutableStateOf("") }
+    var choosing by remember { mutableStateOf(false) }
+    val labels = remember(all) { Labels.all(all) }
+    // A label no recipe carries any more (deleted, renamed, synced away) filters nothing.
+    val active = label.takeIf { l -> labels.any { Labels.has(l, it) } }.orEmpty()
+    val shown = remember(all, query, searching, active) {
+        Labels.filter(if (searching) matching(all, query) else all, active)
+    }
     val state = rememberLazyListState()
 
     Scaffold(
@@ -118,6 +129,20 @@ fun ListScreen(
                     placeholder = { TextMMD(text = stringResource(R.string.search_hint), style = MaterialTheme.typography.labelSmall) },
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp).focusRequester(focus).textActions(),
                 )
+            }
+            if (labels.isNotEmpty()) {
+                Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 4.dp)) {
+                    HouseButton(
+                        stringResource(R.string.labels_button, active.ifEmpty { stringResource(R.string.labels_all) }),
+                        { choosing = true },
+                        Modifier.weight(1f),
+                        on = active.isNotEmpty(),
+                    )
+                    if (active.isNotEmpty()) {
+                        Spacer(Modifier.width(10.dp))
+                        HouseButton(stringResource(R.string.labels_show_all), { label = "" })
+                    }
+                }
             }
             pulled?.let { p ->
                 TextMMD(
@@ -194,6 +219,28 @@ fun ListScreen(
             }
             Spacer(Modifier.height(8.dp))
             TextMMD(text = stringResource(R.string.new_share_hint), style = MaterialTheme.typography.labelSmall)
+        }
+    }
+    if (choosing) {
+        EInkDialog(onDismiss = { choosing = false }) {
+            TextMMD(text = stringResource(R.string.labels_title), style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+            Spacer(Modifier.height(8.dp))
+            PagedColumn(modifier = Modifier.heightIn(max = 380.dp)) {
+                item(key = "all") {
+                    ChoiceRow(stringResource(R.string.labels_all), active.isEmpty(), {
+                        label = ""
+                        choosing = false
+                    }, Modifier.heightIn(min = 48.dp))
+                }
+                items(labels, key = { "l-$it" }) { l ->
+                    ChoiceRow(l, Labels.has(active, l), {
+                        label = l
+                        choosing = false
+                    }, Modifier.heightIn(min = 48.dp))
+                }
+            }
+            Spacer(Modifier.height(8.dp))
+            HouseButton(stringResource(R.string.cancel), { choosing = false }, Modifier.fillMaxWidth())
         }
     }
     if (askLink) LinkDialog(onDismiss = { askLink = false }, onRead = {

@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +25,7 @@ import com.mudita.mmd.components.text.TextMMD
 import com.mudita.mmd.components.top_app_bar.TopAppBarMMD
 import com.wanderwildwood.kondate.R
 import com.wanderwildwood.kondate.data.Durations
+import com.wanderwildwood.kondate.data.Labels
 import com.wanderwildwood.kondate.data.Plain
 import com.wanderwildwood.kondate.data.Recipe
 import com.wanderwildwood.kondate.data.Store
@@ -47,7 +50,9 @@ fun EditScreen(store: Store, id: String?, draft: Recipe?, note: Int, onDone: (St
     var ingredients by rememberSaveable { mutableStateOf(start.ingredients.joinToString("\n")) }
     var steps by rememberSaveable { mutableStateOf(Plain.stepsText(start.steps)) }
     var notes by rememberSaveable { mutableStateOf(start.notes) }
+    var labels by rememberSaveable { mutableStateOf(Labels.join(Labels.parse(start.keywords))) }
     var url by rememberSaveable { mutableStateOf(start.url) }
+    val known = remember { Labels.all(store.all.value) }
     var leaving by remember { mutableStateOf(false) }
     var nameless by remember { mutableStateOf(false) }
     LaunchedEffect(leaving) {
@@ -60,7 +65,8 @@ fun EditScreen(store: Store, id: String?, draft: Recipe?, note: Int, onDone: (St
     // A draft made from a page or from pasted text is not yet saved, so leaving it asks.
     fun changed() = (id == null && draft != null) || name != start.name || serves != start.recipeYield || prep != minutesText(start.prepTime) ||
         cook != minutesText(start.cookTime) || ingredients != start.ingredients.joinToString("\n") ||
-        steps != Plain.stepsText(start.steps) || notes != start.notes || url != start.url
+        steps != Plain.stepsText(start.steps) || notes != start.notes || url != start.url ||
+        Labels.parse(labels) != Labels.parse(start.keywords)
 
     fun save() {
         if (name.isBlank()) {
@@ -80,6 +86,7 @@ fun EditScreen(store: Store, id: String?, draft: Recipe?, note: Int, onDone: (St
                 steps = Plain.stepsFrom(steps),
                 notes = notes.trim(),
                 url = url.trim(),
+                keywords = Labels.join(Labels.parse(labels)),
             ),
         )
         // The ticks count places in the list; a changed list makes them point at other lines.
@@ -144,6 +151,15 @@ fun EditScreen(store: Store, id: String?, draft: Recipe?, note: Int, onDone: (St
                 TextMMD(text = stringResource(R.string.field_steps_note), style = MaterialTheme.typography.labelSmall)
             }
             item(key = "notes") { Field(stringResource(R.string.field_notes), notes, { notes = it }, singleLine = false, lines = 3) }
+            item(key = "labels") { Field(stringResource(R.string.field_labels), labels, { labels = it }, hint = stringResource(R.string.field_labels_hint)) }
+            // The labels already used, to tick instead of typing again; the typed box above is the truth.
+            val offered = Labels.sorted(known + Labels.parse(labels))
+            if (offered.isNotEmpty()) {
+                item(key = "labels-head") { Heading(stringResource(R.string.field_labels_yours)) }
+                items(offered, key = { "label-$it" }) { l ->
+                    CheckRow(l, Labels.has(labels, l), { labels = Labels.toggled(labels, l) }, Modifier.heightIn(min = 48.dp))
+                }
+            }
             item(key = "url") { Field(stringResource(R.string.field_url), url, { url = it }, url = true) }
             item(key = "foot") { Spacer(Modifier.height(24.dp)) }
         }

@@ -109,6 +109,13 @@
     <string name="field_steps_hint">One step to a line</string>
     <string name="field_steps_note">A line starting with # names a part, such as # For the sauce.</string>
     <string name="field_notes">Notes</string>
+    <string name="field_labels">Labels</string>
+    <string name="field_labels_hint">Salads, Italian, Desserts</string>
+    <string name="field_labels_yours">Your labels</string>
+    <string name="labels_button">Labels: %1$s</string>
+    <string name="labels_all">All recipes</string>
+    <string name="labels_title">Show recipes with the label</string>
+    <string name="labels_show_all">Show all</string>
     <string name="field_url">Where it came from</string>
 
     <!-- ============================================================ -->

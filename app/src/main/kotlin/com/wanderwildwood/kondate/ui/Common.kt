@@ -91,9 +91,9 @@ fun SwitchRow(title: String, checked: Boolean, note: String? = null, onChange: (
 
 /** One of a few choices, pressed in place: MMD's radio button, the row taking the press. */
 @Composable
-fun ChoiceRow(title: String, chosen: Boolean, onClick: () -> Unit) {
+fun ChoiceRow(title: String, chosen: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
             .padding(vertical = 4.dp),
@@ -107,9 +107,9 @@ fun ChoiceRow(title: String, chosen: Boolean, onClick: () -> Unit) {
 
 /** A box ticked in place, the row taking the press. */
 @Composable
-fun CheckRow(title: String, checked: Boolean, onChange: (Boolean) -> Unit) {
+fun CheckRow(title: String, checked: Boolean, onChange: (Boolean) -> Unit, modifier: Modifier = Modifier) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickable { onChange(!checked) }
             .padding(vertical = 2.dp),

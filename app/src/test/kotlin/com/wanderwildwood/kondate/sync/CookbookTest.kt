@@ -1,5 +1,6 @@
 package com.wanderwildwood.kondate.sync
 
+import com.wanderwildwood.kondate.data.Labels
 import com.wanderwildwood.kondate.data.Recipe
 import com.wanderwildwood.kondate.data.Step
 import org.json.JSONArray
@@ -158,5 +159,27 @@ class CookbookTest {
         assertEquals("Pancakes", Cookbook.unique("Pancakes", setOf("Waffles")))
         assertEquals("Pancakes (2)", Cookbook.unique("Pancakes", setOf("pancakes")))
         assertEquals("Pancakes (3)", Cookbook.unique("Pancakes", setOf("Pancakes", "Pancakes (2)")))
+    }
+
+    @Test
+    fun labelsGoToCookbookAsKeywordsAndComeBack() {
+        val r = Recipe(id = "a1", name = "Chickpea soup", keywords = Labels.join(listOf("Soups", "Winter", "Crème brûlée")))
+        val json = Cookbook.toJson(r)
+        assertEquals("Soups,Winter,Crème brûlée", json.getString("keywords"))
+        val back = Cookbook.fromJson(json.toString())!!
+        assertEquals(listOf("Soups", "Winter", "Crème brûlée"), Labels.parse(back.keywords))
+        assertTrue(Cookbook.same(r, back))
+        // A second trip changes nothing, and Cookbook's own keywords stay beside the user's.
+        val twice = Cookbook.fromJson(Cookbook.toJson(back, json).toString())!!
+        assertEquals(back.keywords, twice.keywords)
+    }
+
+    @Test
+    fun labelsAddedInCookbookAreReadAsLabels() {
+        val json = Cookbook.toJson(Recipe(id = "a2", name = "Lemon tart", keywords = "Desserts"))
+        json.put("keywords", "Desserts,Citrus,Bake sale")
+        val r = Cookbook.fromJson(json.toString())!!
+        assertEquals(listOf("Desserts", "Citrus", "Bake sale"), Labels.parse(r.keywords))
+        assertEquals(listOf("Lemon tart"), Labels.filter(listOf(r), "bake sale").map { it.name })
     }
 }
