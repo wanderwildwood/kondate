@@ -81,8 +81,10 @@ Which ingredients are ticked stays on the phone. Pictures are not synced either 
 Recipes are kept, and saved to a file, as [schema.org Recipe](https://schema.org/Recipe) JSON —
 the same shape recipe pages publish them in, and the shape Nextcloud Cookbook keeps its recipes
 in. Each is one small file in the app's own storage. An export is a JSON-LD document with every
-recipe in its `@graph`; bringing it back replaces the recipes it holds and adds the rest. The one
-field of the app's own is `notes`, since schema.org has nowhere for "less salt next time".
+recipe in its `@graph`; bringing it back replaces the recipes it holds and adds the rest. The
+app's own fields are `notes`, since schema.org has nowhere for "less salt next time", and, in the
+file of every recipe only, `kondateTicked`: the ingredients ticked off, by their place in the list,
+so bringing the file back puts the cook where they were.
 
 In Nextcloud the recipe is written the way Cookbook writes its own: the method as a flat list,
 a part of it as a line `## For the sauce`, and the yield as a whole number. Three fields are the

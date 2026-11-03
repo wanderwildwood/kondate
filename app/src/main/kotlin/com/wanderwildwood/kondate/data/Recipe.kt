@@ -102,8 +102,12 @@ private val FIRST_NUMBER = Regex("""\d+""")
 fun servingsOf(text: String): Int? =
     FIRST_NUMBER.find(text)?.value?.toIntOrNull()?.takeIf { it in 1..999 }
 
-/** A document holding every recipe, as written to a file: a schema.org graph of Recipes. */
-fun recipesDocument(recipes: List<Recipe>): JSONObject =
+/**
+ * A document holding every recipe, as written to a file: a schema.org graph of Recipes. [ticked]
+ * gives each recipe's ticked ingredients for the file of every recipe; a recipe saved on its own
+ * goes without.
+ */
+fun recipesDocument(recipes: List<Recipe>, ticked: (String) -> Set<Int> = { emptySet() }): JSONObject =
     JSONObject()
         .put("@context", "https://schema.org")
-        .put("@graph", JSONArray().also { a -> recipes.forEach { a.put(it.toJson().apply { remove("@context") }) } })
+        .put("@graph", JSONArray().also { a -> recipes.forEach { a.put(it.toJson().apply { remove("@context"); Ticks.put(this, ticked(it.id)) }) } })

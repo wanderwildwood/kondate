@@ -148,7 +148,7 @@ suspend fun bringIn(context: Context, store: Store, uri: Uri): String? {
     val recipes = withContext(Dispatchers.IO) {
         runCatching {
             context.contentResolver.openInputStream(uri)?.use { it.readBytes().toString(Charsets.UTF_8) }
-        }.getOrNull()?.let { JsonLd.recipesInJson(it) }.orEmpty()
+        }.getOrNull()?.let { JsonLd.recipesAndTicksInJson(it) }.orEmpty()
     }
     if (recipes.isEmpty()) {
         Toast.makeText(context, context.getString(R.string.import_none), Toast.LENGTH_LONG).show()
@@ -158,7 +158,7 @@ suspend fun bringIn(context: Context, store: Store, uri: Uri): String? {
     val count = withContext(Dispatchers.IO) { store.bringIn(recipes) }
     Toast.makeText(context, context.resources.getQuantityString(R.plurals.imported, count, count), Toast.LENGTH_SHORT).show()
     if (recipes.size != 1) return null
-    return recipes[0].id.takeIf { it.isNotEmpty() && store.get(it) != null }
+    return recipes[0].first.id.takeIf { it.isNotEmpty() && store.get(it) != null }
         ?: store.all.value.map { it.id }.firstOrNull { it !in before }
 }
 

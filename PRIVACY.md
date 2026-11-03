@@ -25,7 +25,8 @@ It keeps, in its own private storage on the phone: your recipes, one small file 
 ingredients you have ticked in each (never synced), whether the letters and page dots are shown
 beside the list, and, while you are signed in, the Nextcloud address, your login name, the app
 password (sealed with a key held in the phone's keystore, not kept as plain text), and a note of what was last synced. None of it is backed up by the app, and uninstalling it removes all of it. Settings can
-save every recipe to a file you choose, and bring recipes in from one.
+save every recipe to a file you choose, with the ingredients ticked in each, and bring recipes in
+from one.
 
 It hands something to another app only when you press for it: a shopping list to Memo (or, with
 no Memo on the phone, to the app you pick), a timer to the clock app, a recipe as text or a file

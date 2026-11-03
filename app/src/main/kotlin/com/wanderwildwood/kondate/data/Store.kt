@@ -17,7 +17,8 @@ import java.util.UUID
  * A few hundred recipes are a few hundred kilobytes, so all of them are held in memory.
  *
  * Which ingredients are ticked is kept apart, in preferences: it is where the cook is up to
- * today, not part of the recipe, and does not go into an export.
+ * today, not part of the recipe. Only the file of every recipe carries it, so a restore puts
+ * the ticks back; a recipe saved on its own to share goes without.
  */
 class Store private constructor(private val context: Context) {
 
@@ -127,20 +128,24 @@ class Store private constructor(private val context: Context) {
     /**
      * Recipes brought in from a file. One with the id of a recipe already here replaces it,
      * which is what bringing back an export should do; one with no id, or an id not seen
-     * before, is added. Returns how many came in.
+     * before, is added. Each comes with the ticks the file carries for it, if any (see
+     * [Ticks.afterBringIn]). Returns how many came in.
      */
     @Synchronized
-    fun bringIn(recipes: List<Recipe>): Int {
+    fun bringIn(recipes: List<Pair<Recipe, Set<Int>?>>): Int {
         if (recipes.isEmpty()) return 0
         val now = now()
         val byId = _all.value.associateBy { it.id }.toMutableMap()
-        for (r in recipes) {
+        for ((r, fromFile) in recipes) {
             val kept = r.copy(
                 id = r.id.takeIf { it.isNotEmpty() && safe(it) == it } ?: newId(),
                 created = r.created.ifEmpty { now },
                 modified = r.modified.ifEmpty { now },
             )
+            val here = byId[kept.id]
+            val ticks = Ticks.afterBringIn(here, if (here == null) emptySet() else ticked(kept.id), kept, fromFile)
             write(kept)
+            setTicked(kept.id, ticks)
             byId[kept.id] = kept
         }
         _all.value = sorted(byId.values.toList())
@@ -148,8 +153,8 @@ class Store private constructor(private val context: Context) {
         return recipes.size
     }
 
-    /** Every recipe as one document, for a file. */
-    fun export(): String = recipesDocument(_all.value).toString(1)
+    /** Every recipe as one document, for a file, with the ingredients ticked in each. */
+    fun export(): String = recipesDocument(_all.value) { ticked(it) }.toString(1)
 
     /** The ingredients ticked off in a recipe, by their place in its list. */
     fun ticked(id: String): Set<Int> =

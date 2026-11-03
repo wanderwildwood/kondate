@@ -2,6 +2,7 @@ package com.wanderwildwood.kondate.importer
 
 import com.wanderwildwood.kondate.data.Durations
 import com.wanderwildwood.kondate.data.Recipe
+import com.wanderwildwood.kondate.data.Ticks
 import com.wanderwildwood.kondate.data.Step
 import org.json.JSONArray
 import org.json.JSONObject
@@ -28,11 +29,15 @@ object JsonLd {
      * Every recipe in one JSON text: an exported file, a single recipe shared as a file, or one
      * block of a page. Text that is not JSON gives none.
      */
-    fun recipesInJson(text: String, pageUrl: String = ""): List<Recipe> {
+    fun recipesInJson(text: String, pageUrl: String = ""): List<Recipe> =
+        recipesAndTicksInJson(text, pageUrl).map { it.first }
+
+    /** The same, each recipe with the ticks this app's own file carries for it, if any. */
+    fun recipesAndTicksInJson(text: String, pageUrl: String = ""): List<Pair<Recipe, Set<Int>?>> {
         val root = parse(text) ?: return emptyList()
         val found = mutableListOf<JSONObject>()
         collect(root, found, 0)
-        return found.mapNotNull { fromObject(it, pageUrl) }
+        return found.mapNotNull { o -> fromObject(o, pageUrl)?.let { it to Ticks.of(o) } }
     }
 
     /**
