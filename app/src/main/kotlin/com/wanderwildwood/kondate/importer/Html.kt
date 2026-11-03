@@ -63,7 +63,7 @@ object Html {
 
     /** Spaces of every kind run together into one, and the ends trimmed. */
     fun tidy(text: String): String =
-        text.replace(' ', ' ').replace(Regex("""[\s​﻿]+"""), " ").trim()
+        text.replace('\u00A0', ' ').replace(Regex("""[\s\u200B\uFEFF]+"""), " ").trim()
 
     private val LD_SCRIPT = Regex(
         """(?is)<script\b[^>]*\btype\s*=\s*["']?application/ld\+json["']?[^>]*>(.*?)</script\s*>""",
