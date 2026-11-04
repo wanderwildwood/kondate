@@ -225,7 +225,7 @@
     <string name="about_write_to">Write to %1$s</string>
     <string name="about_no_mail_app">No email app is installed. The address is %1$s.</string>
     <string name="privacy_who_title">Who we are</string>
-    <string name="privacy_who">This app is made by wander wildwood, an independent developer: one person, not a company. That makes wander wildwood the data controller for anything the app itself handles, and that is very little: what you put in stays on this phone unless you send it somewhere yourself, or the app sends it to the recipe sites you ask it to read as described above, and nothing comes to the developer.</string>
+    <string name="privacy_who">This app is made by wander wildwood, an independent developer: one person, not a company. That makes wander wildwood the data controller for anything the app itself handles, and that is very little. What you put in stays on this phone unless you send it somewhere yourself. The only things that go out are the app\'s own requests: a request for the one recipe page whose address you give it, to that recipe site, carrying nothing about you or your recipes; and, once you sign in to your own Nextcloud, your recipes and their sync requests, to that server alone. Nothing comes to the developer.</string>
     <string name="privacy_contact_title">How to contact us</string>
     <string name="privacy_contact">Write to email@wanderthe.dev, about your data or anything else.</string>
     <string name="privacy_rights_title">Your rights</string>

@@ -46,7 +46,7 @@ opens a web address in your browser, and only when you press it.
 <!-- shared-about privacy section -->
 ## Who we are
 
-Recipes is made by wander wildwood, an independent developer: one person, not a company. wander wildwood is the data controller for anything the app itself handles, and that is very little. Recipes keeps what you put in it on your phone, apart from what it sends to the recipe sites you ask it to read as described above, and sends nothing to the developer, so the developer holds no data about you.
+Recipes is made by wander wildwood, an independent developer: one person, not a company. wander wildwood is the data controller for anything the app itself handles, and that is very little. What you put in Recipes stays on your phone. The only things that go out are the requests described above: a request for the one recipe page whose address you give it, to that recipe site, carrying nothing about you or your recipes; and, once you sign in to a Nextcloud of your own, your recipes and the sync requests to Cookbook on that server, to that server alone. The developer receives nothing and holds no data about you.
 
 ## How to contact us
 
@@ -69,5 +69,6 @@ Similar laws elsewhere, such as the CCPA in California, give you the right to kn
 Since Recipes keeps what it stores only on your phone, you can exercise most of these rights yourself: delete a recipe in the app, save every recipe to a file in Settings, sign out of Nextcloud, clear the app's data in Android's settings, or uninstall the app, which deletes all of it. For anything you cannot do yourself, write to the address above.
 
 Recipes connects to the recipe sites you ask it to read. They are separate from this app and from its developer, and what they receive is covered by their own privacy policies; ask them about what they hold.
+
 If you point Recipes at a server of your own, what that server keeps is yours to manage.
 <!-- /shared-about privacy section -->
