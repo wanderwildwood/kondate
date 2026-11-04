@@ -11,7 +11,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,7 +28,6 @@ import com.wanderwildwood.kondate.data.Labels
 import com.wanderwildwood.kondate.data.Plain
 import com.wanderwildwood.kondate.data.Recipe
 import com.wanderwildwood.kondate.data.Store
-import kotlinx.coroutines.delay
 
 /**
  * A recipe typed in, or changed: a plain form, a box for each part. Ingredients and steps are
@@ -53,14 +51,8 @@ fun EditScreen(store: Store, id: String?, draft: Recipe?, note: Int, onDone: (St
     var labels by rememberSaveable { mutableStateOf(Labels.join(Labels.parse(start.keywords))) }
     var url by rememberSaveable { mutableStateOf(start.url) }
     val known = remember { Labels.all(store.all.value) }
-    var leaving by remember { mutableStateOf(false) }
+    var leaving by rememberArmedFlag(disarmOnBack = false)
     var nameless by remember { mutableStateOf(false) }
-    LaunchedEffect(leaving) {
-        if (leaving) {
-            delay(6_000L)
-            leaving = false
-        }
-    }
 
     // A draft made from a page or from pasted text is not yet saved, so leaving it asks.
     fun changed() = (id == null && draft != null) || name != start.name || serves != start.recipeYield || prep != minutesText(start.prepTime) ||

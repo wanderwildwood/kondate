@@ -16,6 +16,7 @@ import com.wanderwildwood.kondate.ui.Incoming
 import com.wanderwildwood.kondate.ui.RecipesApp
 import com.wanderwildwood.kondate.ui.houseTypography
 import com.wanderwildwood.kondate.ui.monochrome
+import com.wanderwildwood.kondate.ui.ArmedScope
 
 class MainActivity : ComponentActivity() {
 
@@ -30,7 +31,7 @@ class MainActivity : ComponentActivity() {
             // for as long as a field has focus.
             CompositionLocalProvider(LocalCursorBlinkEnabled provides false) {
                 ThemeMMD(colorScheme = monochrome, typography = houseTypography) {
-                    RecipesApp(incoming.value, onTaken = { incoming.value = null })
+                    ArmedScope { RecipesApp(incoming.value, onTaken = { incoming.value = null }) }
                 }
             }
         }

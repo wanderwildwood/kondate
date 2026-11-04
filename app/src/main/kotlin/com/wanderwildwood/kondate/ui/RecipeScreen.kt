@@ -44,7 +44,6 @@ import com.wanderwildwood.kondate.data.Recipe
 import com.wanderwildwood.kondate.data.Store
 import com.wanderwildwood.kondate.data.recipesDocument
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -241,19 +240,12 @@ private fun MethodStep(number: Int, text: String) {
 
 /**
  * What else can be done with a recipe: send it as words, keep it as a file, or delete it. The
- * delete asks in its own face, and gives up asking after six seconds.
+ * delete asks in its own face, and stays armed until the next other touch, Back or leaving.
  */
 @Composable
 private fun MoreDialog(store: Store, recipe: Recipe, factor: Double, onDismiss: () -> Unit, onDeleted: () -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    var arming by remember { mutableStateOf(false) }
-    LaunchedEffect(arming) {
-        if (arming) {
-            delay(6_000L)
-            arming = false
-        }
-    }
     val save = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
         if (uri == null) return@rememberLauncherForActivityResult
         scope.launch {
@@ -269,6 +261,10 @@ private fun MoreDialog(store: Store, recipe: Recipe, factor: Double, onDismiss: 
         }
     }
     EInkDialog(onDismiss = onDismiss) {
+        // The dialog is its own window, so its armed row needs its own scope to see a tap elsewhere.
+        ArmedScope {
+        Column {
+        var arming by rememberArmedFlag()
         TextMMD(text = recipe.name, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
         Spacer(Modifier.height(12.dp))
         WideButton(stringResource(R.string.share_text)) {
@@ -291,6 +287,8 @@ private fun MoreDialog(store: Store, recipe: Recipe, factor: Double, onDismiss: 
             } else {
                 arming = true
             }
+        }
+        }
         }
     }
 }
