@@ -14,6 +14,7 @@ import com.wanderwildwood.kondate.importer.Reader
 import com.wanderwildwood.kondate.sync.Cloud
 import com.wanderwildwood.kondate.ui.Incoming
 import com.wanderwildwood.kondate.ui.RecipesApp
+import com.wanderwildwood.kondate.ui.houseTypography
 import com.wanderwildwood.kondate.ui.monochrome
 
 class MainActivity : ComponentActivity() {
@@ -28,7 +29,7 @@ class MainActivity : ComponentActivity() {
             // A steady cursor: a blinking one is a repaint twice a second on an e-ink panel
             // for as long as a field has focus.
             CompositionLocalProvider(LocalCursorBlinkEnabled provides false) {
-                ThemeMMD(colorScheme = monochrome) {
+                ThemeMMD(colorScheme = monochrome, typography = houseTypography) {
                     RecipesApp(incoming.value, onTaken = { incoming.value = null })
                 }
             }
