@@ -202,7 +202,12 @@
     <string name="about_icons">Symbole von Material Symbols, Apache 2.0</string>
     <string name="about_feed_the_llamas">füttere die Lamas</string>
     <string name="about_close">Schließen</string>
-    <!-- Licences page, reached from About -->
+    <!-- About drawers -->
+    <string name="about_open_drawer">%1$s öffnen</string>
+    <string name="about_close_drawer">%1$s schließen</string>
+    <string name="about_contact_head">Kontakt</string>
+    <string name="about_links_head">Links</string>
+    <!-- Licenses: a drawer in About -->
     <string name="licences_title">Lizenzen</string>
     <string name="licences_source_head">Quellcode</string>
     <string name="licences_source">Quelle: %1$s</string>
