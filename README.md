@@ -52,6 +52,7 @@ on any device with Android 11 or later, Supernote's tablets among them.
   in the folder [Nextcloud Cookbook](https://apps.nextcloud.com/apps/cookbook) keeps its own in,
   in its layout, so they show in Cookbook too, and a recipe added or changed there comes back
   here. It is off until you sign in, and the app works the same without it.
+- **In English and German.** The German translation is a reader's, from the app's GitHub.
 
 ## Nextcloud
 
