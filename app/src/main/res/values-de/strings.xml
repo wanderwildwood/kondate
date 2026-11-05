@@ -201,18 +201,32 @@
     <string name="about_licence">GNU General Public License v3</string>
     <string name="about_icons">Symbole von Material Symbols, Apache 2.0</string>
     <string name="about_feed_the_llamas">füttere die Lamas</string>
-    <string name="about_no_browser">Auf diesem Telefon gibt es keinen Browser, um das zu öffnen.</string>
     <string name="about_close">Schließen</string>
     <!-- Licences page, reached from About -->
     <string name="licences_title">Lizenzen</string>
     <string name="licences_source_head">Quellcode</string>
     <string name="licences_source">Quelle: %1$s</string>
-    <string name="licences_licence_head">Lizenz</string>
     <string name="licences_licence">Rezepte ist freie Software unter der GNU General Public License, ausschließlich Version 3. Copyright wander wildwood.</string>
-    <string name="licences_built_head">Gebaut mit</string>
     <string name="licences_back">Zurück</string>
     <string name="licences_full_head">Vollständige Texte</string>
     <string name="licences_full_gpl">GNU General Public License v3 (vollständiger Text)</string>
     <string name="licences_full_apache">Apache License 2.0 (vollständiger Text)</string>
     <string name="licences_full_ofl">SIL Open Font Licence 1.1 (vollständiger Text)</string>
+    <string name="field_labels">Etiketten</string>
+    <string name="field_labels_hint">Salate, Italienisch, Desserts</string>
+    <string name="field_labels_yours">Deine Etiketten</string>
+    <string name="labels_button">Etiketten: %1$s</string>
+    <string name="labels_all">Alle Rezepte</string>
+    <string name="labels_title">Rezepte mit dem Etikett zeigen</string>
+    <string name="labels_show_all">Alle zeigen</string>
+    <string name="licences_full_mpl">Mozilla Public License 2.0 (vollständiger Text)</string>
+    <string name="licences_no_text">%s braucht hier keinen Lizenztext.</string>
+    <string name="about_write_to">Schreib an %1$s</string>
+    <string name="about_no_mail_app">Es ist keine E-Mail-App installiert. Die Adresse ist %1$s.</string>
+    <string name="privacy_who_title">Wer wir sind</string>
+    <string name="privacy_who">Diese App stammt von wander wildwood, einem unabhängigen Entwickler: eine Person, keine Firma. Damit ist wander wildwood der Verantwortliche für alles, was die App selbst verarbeitet, und das ist sehr wenig. Was du eingibst, bleibt auf diesem Telefon, außer du schickst es selbst irgendwohin. Nach draußen gehen nur die eigenen Anfragen der App: eine Anfrage nach der einen Rezeptseite, deren Adresse du ihr gibst, an diese Rezeptseite, ohne etwas über dich oder deine Rezepte; und, sobald du dich bei deiner eigenen Nextcloud anmeldest, deine Rezepte und ihre Abgleichanfragen, nur an diesen Server. Beim Entwickler kommt nichts an.</string>
+    <string name="privacy_contact_title">So erreichst du uns</string>
+    <string name="privacy_contact">Schreib an email@wanderthe.dev, zu deinen Daten oder zu allem anderen.</string>
+    <string name="privacy_rights_title">Deine Rechte</string>
+    <string name="privacy_rights">Nach der DSGVO kannst du verlangen, die über dich gespeicherten Daten zu sehen, sie berichtigen oder löschen zu lassen, ihre Nutzung einzuschränken oder ihr zu widersprechen, eine Kopie mitzunehmen, eine Einwilligung zu widerrufen und dich bei einer Datenschutzbehörde zu beschweren. Da die App alles, was sie speichert, nur auf deinem Telefon hält, kannst du das meiste selbst tun: ein Rezept in der App löschen, in den Einstellungen alle Rezepte in eine Datei sichern, dich von der Nextcloud abmelden, die Daten der App in den Android-Einstellungen löschen oder die App deinstallieren. Was die Rezeptseiten erhalten, die du lesen lässt, regeln deren eigene Datenschutzerklärungen. Ein eigener Server gehört dir: was er speichert, bestimmst du.</string>
 </resources>
