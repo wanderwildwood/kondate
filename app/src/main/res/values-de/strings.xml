@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Rezepte</string>
+    <!-- Under the app's icon in the share sheet -->
+    <string name="share_label">Rezept speichern</string>
+
+    <!-- Read aloud by a screen reader -->
+    <string name="cd_back">Zurück</string>
+    <string name="cd_about">Über</string>
+    <string name="cd_settings">Einstellungen</string>
+    <string name="cd_search">Suchen</string>
+    <string name="cd_add">Neues Rezept</string>
+    <string name="cd_edit">Bearbeiten</string>
+    <string name="cd_more">Mehr</string>
+    <string name="cd_discard">Verlassen, ohne zu speichern</string>
+    <string name="cd_close_cook">Kochmodus verlassen</string>
+
+    <!-- ============================================================ -->
+    <!-- The list -->
+
+    <string name="list_empty">Noch keine Rezepte. Teile hier aus dem Browser eine Rezeptseite oder ihren Text, oder tippe auf +, um eines einzugeben oder einzufügen.</string>
+    <string name="search_hint">Name oder Zutat</string>
+    <string name="search_none">Kein Rezept enthält das.</string>
+    <string name="untitled">Ohne Titel</string>
+    <plurals name="serves">
+        <item quantity="one">Ergibt %1$d</item>
+        <item quantity="other">Ergibt %1$d</item>
+    </plurals>
+
+    <string name="new_recipe">Neues Rezept</string>
+    <string name="new_type_in">Selbst eingeben</string>
+    <string name="new_from_link">Aus der Adresse einer Seite</string>
+    <string name="new_share_hint">Eine Seite oder der im Browser ausgewählte Rezepttext lässt sich auch hier teilen.</string>
+    <string name="new_paste">Rezepttext einfügen</string>
+    <string name="paste_title">Rezepttext einfügen</string>
+    <string name="paste_help">Kopiere das Rezept aus dem Browser oder einer E-Mail und füge es hier ein. Die erste Zeile wird der Name; „Ingredients“ und „Method“ (oder „Instructions“, „Directions“, „Steps“) werden für dich erkannt, und alles andere kommt in die Notizen.</string>
+    <string name="paste_hint">Füge das Rezept hier ein</string>
+    <string name="paste_make">Entwurf erstellen</string>
+    <string name="paste_empty">Noch nichts eingefügt.</string>
+    <string name="paste_draft_note">Ein Entwurf aus dem eingefügten Text. Prüfe jeden Teil, korrigiere, was nicht stimmt, und tippe dann auf Speichern.</string>
+    <string name="read_refused">Die Seite antwortet mit %1$d: Sie lässt Apps ihre Seiten nicht lesen. Öffne das Rezept im Browser, kopiere den Rezepttext und wähle „Rezepttext einfügen“.</string>
+    <string name="link_title">Adresse der Rezeptseite</string>
+    <string name="link_wrong">Das ist keine Webadresse.</string>
+    <string name="link_read">Seite lesen</string>
+    <string name="cancel">Abbrechen</string>
+
+    <!-- ============================================================ -->
+    <!-- Reading a page -->
+
+    <string name="reading_title">Ein Rezept wird gespeichert</string>
+    <!-- %1$s is the site, as example.com -->
+    <string name="reading">Die Seite auf %1$s wird gelesen.</string>
+    <string name="read_failed_offline">%1$s war nicht erreichbar. Ist das Telefon online?</string>
+    <!-- %2$d is the web server's answer, such as 403 or 404 -->
+    <string name="read_failed_code">%1$s gibt die Seite nicht heraus (Antwort %2$d).</string>
+    <string name="try_again">Erneut versuchen</string>
+    <string name="type_it_in">Stattdessen selbst eingeben</string>
+    <string name="no_recipe_on_page">Auf dieser Seite ist kein Rezept, das diese App lesen kann. Name und Adresse stehen unten; der Rest lässt sich selbst eingeben.</string>
+    <string name="already_saved">Dieses Rezept ist schon gespeichert.</string>
+
+    <!-- ============================================================ -->
+    <!-- A recipe -->
+
+    <!-- %1$s is a time, as "15 min" -->
+    <string name="prep_time">Vorbereitung %1$s</string>
+    <string name="cook_time">Kochen %1$s</string>
+    <string name="total_time">Gesamt %1$s</string>
+    <string name="time_seconds">%1$d Sek.</string>
+    <string name="time_minutes">%1$d Min.</string>
+    <string name="time_hours">%1$d Std.</string>
+    <string name="time_hours_minutes">%1$d Std. %2$d Min.</string>
+    <!-- For a recipe that does not say how many it serves. %1$s is a multiple, as "1 1/2" -->
+    <string name="scale_factor">Mengen ×%1$s</string>
+    <string name="cook">Kochen, Schritt für Schritt</string>
+    <string name="ingredients">Zutaten</string>
+    <string name="method">Zubereitung</string>
+    <string name="notes">Notizen</string>
+    <!-- %1$s is the site the recipe came from, as example.com -->
+    <string name="source">Von %1$s</string>
+    <string name="add_to_shopping">Zur Einkaufsliste hinzufügen</string>
+    <string name="clear_ticks">Häkchen entfernen</string>
+    <string name="shopping_nothing_left">Alles ist abgehakt.</string>
+    <!-- The title of the note in Notes. %1$s is the recipe's name -->
+    <string name="shopping_title">Einkauf für %1$s</string>
+    <string name="nothing_takes_text">Keine App auf diesem Telefon nimmt Text an.</string>
+
+    <string name="share_text">Als Text senden</string>
+    <string name="save_file">Als Datei speichern</string>
+    <string name="delete">Löschen</string>
+    <string name="delete_armed">Löschen — noch einmal tippen</string>
+    <string name="saved_to_file">Gespeichert.</string>
+    <string name="save_failed">Diese Datei konnte nicht geschrieben werden.</string>
+
+    <!-- ============================================================ -->
+    <!-- Typing in -->
+
+    <string name="edit_recipe">Rezept bearbeiten</string>
+    <string name="save">Speichern</string>
+    <string name="discard_armed">Verlassen — noch einmal tippen</string>
+    <string name="field_name">Name</string>
+    <string name="field_name_needed">Ein Rezept braucht einen Namen.</string>
+    <string name="field_yield">Ergibt</string>
+    <string name="field_yield_hint">4 oder 12 Brötchen</string>
+    <string name="field_prep">Vorbereitung, in Minuten</string>
+    <string name="field_cook">Kochen, in Minuten</string>
+    <string name="field_ingredients">Zutaten</string>
+    <string name="field_ingredients_hint">Eine pro Zeile</string>
+    <string name="field_steps">Zubereitung</string>
+    <string name="field_steps_hint">Ein Schritt pro Zeile</string>
+    <string name="field_steps_note">Eine Zeile, die mit # beginnt, benennt einen Teil, etwa # Für die Soße.</string>
+    <string name="field_notes">Notizen</string>
+    <string name="field_url">Woher es stammt</string>
+
+    <!-- ============================================================ -->
+    <!-- Cook mode -->
+
+    <!-- %1$d is the step, %2$d how many there are -->
+    <string name="step_of">Schritt %1$d von %2$d</string>
+    <string name="step_previous">Zurück</string>
+    <string name="step_next">Weiter</string>
+    <string name="step_done">Fertig</string>
+    <!-- %1$s is a time, as "10 min" -->
+    <string name="start_timer">Timer für %1$s</string>
+    <!-- The timer's name in the clock app. %1$s is the recipe, %2$d the step -->
+    <string name="timer_label">%1$s, Schritt %2$d</string>
+    <string name="no_clock">Keine Uhr-App auf diesem Telefon startet Timer.</string>
+
+    <!-- ============================================================ -->
+    <!-- Settings -->
+
+    <string name="settings_title">Einstellungen</string>
+    <string name="settings_files">Dateien</string>
+    <string name="export_all">Alle Rezepte in eine Datei speichern</string>
+    <plurals name="recipe_count">
+        <item quantity="one">%1$d Rezept</item>
+        <item quantity="other">%1$d Rezepte</item>
+    </plurals>
+    <string name="import_file">Rezepte aus einer Datei übernehmen</string>
+    <string name="import_file_note">Eine von hier gespeicherte oder jede Datei mit schema.org-Rezepten. Ein Rezept, das schon hier ist, wird durch seine Kopie ersetzt.</string>
+    <string name="import_none">In dieser Datei sind keine Rezepte.</string>
+    <plurals name="imported">
+        <item quantity="one">%1$d Rezept übernommen.</item>
+        <item quantity="other">%1$d Rezepte übernommen.</item>
+    </plurals>
+
+    <!-- ============================================================ -->
+    <!-- Nextcloud -->
+
+    <string name="cloud_title">Nextcloud</string>
+    <string name="cloud_off">Aus. Die Rezepte bleiben auf diesem Telefon.</string>
+    <string name="cloud_explain">Halte deine Rezepte außer hier auch in deiner eigenen Nextcloud, im Ordner, den Nextcloud Cookbook verwendet, damit sie auch in Cookbook und auf jedem anderen dort angemeldeten Telefon erscheinen. Nichts geht irgendwohin, bis du dich anmeldest.</string>
+    <string name="cloud_server">Serveradresse</string>
+    <string name="cloud_server_hint" translatable="false">cloud.example.org</string>
+    <string name="cloud_sign_in">Anmelden</string>
+    <string name="cloud_type_password">Stattdessen ein App-Passwort eingeben</string>
+    <string name="cloud_user">Anmeldename</string>
+    <string name="cloud_app_password">App-Passwort</string>
+    <string name="cloud_app_password_note">Erstelle eines in Nextcloud unter Persönliche Einstellungen, Sicherheit, Geräte und Sitzungen.</string>
+    <string name="cloud_waiting">Schließe die Anmeldung im Browser ab; hier wird darauf gewartet.</string>
+    <string name="cloud_no_browser">Auf diesem Telefon ist kein Browser. Gib stattdessen ein App-Passwort ein.</string>
+    <string name="cloud_needs_https">Rezepte meldet sich nur bei einem Server über https an. Verwende eine Adresse, die mit https:// beginnt, oder gib nur den Namen ein.</string>
+    <string name="read_pdf">%1$s gab eine PDF, die Rezepte nicht liest. Öffne sie in deiner PDF-App und teile den Text mit Rezepte, oder kopiere ihn und wähle „Rezepttext einfügen“.</string>
+    <string name="read_needs_https">%1$s antwortet nur über einfaches http, das Rezepte nicht verwendet. Gib das Rezept stattdessen selbst ein.</string>
+    <string name="cloud_unreachable">Dieser Server war nicht erreichbar.</string>
+    <string name="cloud_refused">Der Server hat diesen Anmeldenamen und das Passwort nicht angenommen.</string>
+    <string name="cloud_account">Angemeldet als</string>
+    <!-- %1$s is the login name, %2$s the server, as cloud.example.org -->
+    <string name="cloud_signed_in">%1$s auf %2$s</string>
+    <string name="cloud_sync_now">Jetzt abgleichen</string>
+    <string name="cloud_syncing">Wird abgeglichen…</string>
+    <string name="pull_syncing">Wird abgeglichen…</string>
+    <string name="pull_up_to_date">Auf dem neuesten Stand</string>
+    <string name="pull_unreachable">Die Nextcloud war nicht erreichbar. Die Rezepte hier sind die Kopien dieses Telefons.</string>
+    <string name="pull_refused">Die Nextcloud hat dieses Telefon nicht hereingelassen. Melde dich in den Einstellungen erneut an.</string>
+    <string name="pull_failed">Der Abgleich ist nicht durchgelaufen.</string>
+    <string name="cloud_never">Noch nicht abgeglichen.</string>
+    <!-- %1$s is a date and time -->
+    <string name="cloud_last">Zuletzt abgeglichen %1$s</string>
+    <string name="cloud_failed_unreachable">Der Server war beim letzten Mal nicht erreichbar. Es wird beim Öffnen der App und nach der nächsten Änderung erneut versucht.</string>
+    <string name="cloud_failed_refused">Der Server hat dieses Telefon nicht hereingelassen. Wurde sein App-Passwort widerrufen? Melde dich ab und wieder an.</string>
+    <string name="cloud_failed">Der letzte Abgleich ist nicht durchgelaufen. Es wird beim Öffnen der App und nach der nächsten Änderung erneut versucht.</string>
+    <string name="cloud_folder">Ordner</string>
+    <string name="cloud_folder_note">Der Ordner in deinen Nextcloud-Dateien, derselbe wie der von Cookbook (seine Einstellungen zeigen, welcher). Jedes Rezept ist ein Ordner darin mit recipe.json. Bilder, die Cookbook dort ablegt, bleiben unangetastet.</string>
+    <string name="cloud_use_folder">Diesen Ordner verwenden</string>
+    <string name="cloud_sign_out">Abmelden</string>
+    <string name="cloud_sign_out_armed">Abmelden — noch einmal tippen</string>
+    <!-- After the name of the phone's copy of a recipe changed both here and in Nextcloud since
+         the last sync: both are kept, the phone's as "Pancakes (phone)" -->
+    <string name="phone_copy_suffix">\u0020(Telefon)</string>
+
+    <!-- ============================================================ -->
+    <!-- About -->
+
+    <string name="about_title">Rezepte %1$s</string>
+    <string name="about_what">Rezepte, die auf diesem Telefon bleiben. Die App geht online, um eine Rezeptseite zu lesen, die du ihr schickst — sie behält die Wörter und nicht die Bilder —, und um dich mit deiner eigenen Nextcloud abzugleichen, wenn du dich bei einer anmeldest.</string>
+    <string name="about_privacy_head">Datenschutz</string>
+    <string name="about_privacy">Deine Rezepte bleiben auf diesem Telefon. Die App sammelt nichts über dich und hat keine Werbung und keine Analysen. Sie geht nur online, um eine Rezeptseite zu lesen, deren Adresse du ihr geschickt hast (eine Seite, keine Bilder oder Skripte, nur über https, und sie sagt klar, dass sie diese App ist). Rezepttext, den du hier einfügst oder teilst, verlässt das Telefon nie, und sobald du dich bei deiner eigenen Nextcloud anmeldest, nur dorthin, um deine Rezepte mit ihr abzugleichen. Das App-Passwort der Nextcloud bleibt auf dem Telefon, versiegelt mit einem Schlüssel, der es nicht verlassen kann; du kannst es auf dem Server widerrufen. Sicherungen und Exporte gehen nur dorthin, wo du sie zu speichern wählst.</string>
+    <string name="about_terms_head">Bedingungen</string>
+    <string name="about_terms">Diese App ist freie Software unter der GNU General Public License v3. Sie kommt ohne Gewährleistung: Nutze sie auf eigenes Risiko. Eine Rezeptseite wird nur für den eigenen Gebrauch gespeichert; das Rezept bleibt dem, der es geschrieben hat.</string>
+    <string name="about_no_browser_address">Es ist kein Browser installiert. Die Adresse ist %1$s.</string>
+    <string name="about_licence">GNU General Public License v3</string>
+    <string name="about_icons">Symbole von Material Symbols, Apache 2.0</string>
+    <string name="about_feed_the_llamas">füttere die Lamas</string>
+    <string name="about_no_browser">Auf diesem Telefon gibt es keinen Browser, um das zu öffnen.</string>
+    <string name="about_close">Schließen</string>
+    <!-- Licences page, reached from About -->
+    <string name="licences_title">Lizenzen</string>
+    <string name="licences_source_head">Quellcode</string>
+    <string name="licences_source">Quelle: %1$s</string>
+    <string name="licences_licence_head">Lizenz</string>
+    <string name="licences_licence">Rezepte ist freie Software unter der GNU General Public License, ausschließlich Version 3. Copyright wander wildwood.</string>
+    <string name="licences_built_head">Gebaut mit</string>
+    <string name="licences_back">Zurück</string>
+    <string name="licences_full_head">Vollständige Texte</string>
+    <string name="licences_full_gpl">GNU General Public License v3 (vollständiger Text)</string>
+    <string name="licences_full_apache">Apache License 2.0 (vollständiger Text)</string>
+    <string name="licences_full_ofl">SIL Open Font Licence 1.1 (vollständiger Text)</string>
+</resources>
