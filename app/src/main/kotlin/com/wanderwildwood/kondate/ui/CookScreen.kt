@@ -116,7 +116,9 @@ fun CookScreen(store: Store, id: String, onBack: () -> Unit) {
                 // A long step is read a screen at a time, swiped up like any list here.
                 val list = rememberLazyListState()
                 LaunchedEffect(at) { list.scrollToItem(0) }
-                PagedColumn(state = list, modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp)) {
+                // The space above and below sits outside the list: inside it, a page that opens on a later
+                // sentence would show the foot of the one before in that band.
+                PagedColumn(state = list, modifier = Modifier.fillMaxSize().padding(vertical = 12.dp), contentPadding = PaddingValues(horizontal = 24.dp)) {
                     if (step.section.isNotEmpty()) {
                         item(key = "section") {
                             TextMMD(text = step.section, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 8.dp))
