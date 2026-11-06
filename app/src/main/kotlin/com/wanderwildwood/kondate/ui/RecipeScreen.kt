@@ -1,7 +1,6 @@
 package com.wanderwildwood.kondate.ui
 
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -246,7 +245,7 @@ private fun MethodStep(number: Int, text: String) {
 private fun MoreDialog(store: Store, recipe: Recipe, factor: Double, onDismiss: () -> Unit, onDeleted: () -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val save = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
+    val save = rememberLauncherForActivityResult(FilesCreateDocument("application/json")) { uri ->
         if (uri == null) return@rememberLauncherForActivityResult
         scope.launch {
             val ok = withContext(Dispatchers.IO) {

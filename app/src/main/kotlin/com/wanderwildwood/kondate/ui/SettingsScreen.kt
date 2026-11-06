@@ -1,7 +1,6 @@
 package com.wanderwildwood.kondate.ui
 
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -43,7 +42,7 @@ fun SettingsScreen(store: Store, onBack: () -> Unit, onAbout: () -> Unit, onOpen
     val cloud = remember { Cloud.get(context) }
     val account by cloud.account.collectAsStateWithLifecycle()
 
-    val export = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
+    val export = rememberLauncherForActivityResult(FilesCreateDocument("application/json")) { uri ->
         if (uri == null) return@rememberLauncherForActivityResult
         scope.launch {
             val ok = withContext(Dispatchers.IO) {
@@ -54,7 +53,7 @@ fun SettingsScreen(store: Store, onBack: () -> Unit, onAbout: () -> Unit, onOpen
             Elsewhere.say(context, if (ok) R.string.saved_to_file else R.string.save_failed)
         }
     }
-    val bring = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+    val bring = rememberLauncherForActivityResult(FilesOpenDocument(writable = false)) { uri ->
         if (uri == null) return@rememberLauncherForActivityResult
         scope.launch { bringIn(context, store, uri)?.let(onOpen) }
     }

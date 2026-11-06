@@ -10,6 +10,8 @@
     <queries>
         <!-- Notes, which takes the shopping list. -->
         <package android:name="com.wanderwildwood.oboegaki" />
+        <!-- Cabinet, which draws the open and save screens for the e-ink panel. -->
+        <package android:name="com.wanderwildwood.tana" />
         <!-- A clock that starts a timer when asked. -->
         <intent>
             <action android:name="android.intent.action.SET_TIMER" />
