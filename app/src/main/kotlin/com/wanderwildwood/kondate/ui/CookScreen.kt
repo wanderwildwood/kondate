@@ -122,7 +122,12 @@ fun CookScreen(store: Store, id: String, onBack: () -> Unit) {
                             TextMMD(text = step.section, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 8.dp))
                         }
                     }
-                    item(key = "text$at") { TextMMD(text = step.text, style = MaterialTheme.typography.titleLarge) }
+                    // One row a sentence, so a page always ends on a whole sentence: a step longer
+                    // than the screen is read a page at a time with nothing cut in half at the foot.
+                    val sentences = sentencesOf(step.text)
+                    items(sentences.size, key = { "text$at-$it" }) { i ->
+                        TextMMD(text = sentences[i], style = MaterialTheme.typography.titleLarge)
+                    }
                     if (found.isNotEmpty()) {
                         item(key = "timers") {
                             Column(Modifier.padding(top = 16.dp)) {
@@ -150,3 +155,7 @@ fun CookScreen(store: Store, id: String, onBack: () -> Unit) {
         }
     }
 }
+
+/** A step's sentences, in order, each with its closing mark; the whole text when it has only one. */
+internal fun sentencesOf(text: String): List<String> =
+    text.trim().split(Regex("(?<=[.!?])\\s+(?=\\S)")).filter { it.isNotBlank() }.ifEmpty { listOf(text) }
