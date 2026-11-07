@@ -90,7 +90,7 @@ fun RecipeScreen(store: Store, id: String, onBack: () -> Unit, onEdit: () -> Uni
             )
         },
     ) { padding ->
-        PagedColumn(modifier = Modifier.padding(padding).fillMaxSize(), contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 20.dp)) {
+        PagedColumn(modifier = Modifier.padding(padding).fillMaxSize(), contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 20.dp), showCutRow = true) {
             item(key = "name") {
                 TextMMD(
                     text = recipe.name.ifBlank { stringResource(R.string.untitled) },

@@ -177,6 +177,7 @@ fun ListScreen(
                         state = state,
                         modifier = Modifier.fillMaxSize(),
                         onPullAtTop = if (onPull != null) pull else null,
+                        showCutRow = true,
                     ) {
                         items(shown, key = { it.id }) { r ->
                             Column(
@@ -225,7 +226,7 @@ fun ListScreen(
         EInkDialog(onDismiss = { choosing = false }) {
             TextMMD(text = stringResource(R.string.labels_title), style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
             Spacer(Modifier.height(8.dp))
-            PagedColumn(modifier = Modifier.heightIn(max = 380.dp)) {
+            PagedColumn(modifier = Modifier.heightIn(max = 380.dp), showCutRow = true) {
                 item(key = "all") {
                     ChoiceRow(stringResource(R.string.labels_all), active.isEmpty(), {
                         label = ""

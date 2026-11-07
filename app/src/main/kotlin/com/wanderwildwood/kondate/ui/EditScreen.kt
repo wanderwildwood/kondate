@@ -113,6 +113,7 @@ fun EditScreen(store: Store, id: String?, draft: Recipe?, note: Int, onDone: (St
         PagedColumn(
             modifier = Modifier.padding(padding).fillMaxSize(),
             contentPadding = PaddingValues(horizontal = 20.dp),
+            showCutRow = true,
         ) {
             if (note != 0) {
                 item(key = "note") {

@@ -118,7 +118,7 @@ fun CookScreen(store: Store, id: String, onBack: () -> Unit) {
                 LaunchedEffect(at) { list.scrollToItem(0) }
                 // The space above and below sits outside the list: inside it, a page that opens on a later
                 // sentence would show the foot of the one before in that band.
-                PagedColumn(state = list, modifier = Modifier.fillMaxSize().padding(vertical = 12.dp), contentPadding = PaddingValues(horizontal = 24.dp)) {
+                PagedColumn(state = list, modifier = Modifier.fillMaxSize().padding(vertical = 12.dp), contentPadding = PaddingValues(horizontal = 24.dp), showCutRow = true) {
                     if (step.section.isNotEmpty()) {
                         item(key = "section") {
                             TextMMD(text = step.section, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 8.dp))

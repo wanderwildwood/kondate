@@ -76,7 +76,7 @@ fun NextcloudScreen(cloud: Cloud, onBack: () -> Unit) {
             )
         },
     ) { padding ->
-        PagedColumn(modifier = Modifier.padding(padding).fillMaxSize(), contentPadding = PaddingValues(horizontal = 20.dp)) {
+        PagedColumn(modifier = Modifier.padding(padding).fillMaxSize(), contentPadding = PaddingValues(horizontal = 20.dp), showCutRow = true) {
             item { Spacer(Modifier.height(8.dp)) }
             val a = account
             if (a != null) {
