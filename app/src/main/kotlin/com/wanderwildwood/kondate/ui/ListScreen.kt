@@ -180,20 +180,23 @@ fun ListScreen(
                         showCutRow = true,
                     ) {
                         items(shown, key = { it.id }) { r ->
-                            Column(
-                                Modifier
-                                    .fillMaxWidth()
-                                    .clickable { onOpen(r.id) }
-                                    .padding(horizontal = 20.dp, vertical = 12.dp),
-                            ) {
-                                TextMMD(
-                                    text = r.name.ifBlank { stringResource(R.string.untitled) },
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    maxLines = 2,
-                                    overflow = TextOverflow.Ellipsis,
-                                )
-                                val summary = remember(r) { Words.summary(context, r) }
-                                if (summary.isNotEmpty()) TextMMD(text = summary, style = MaterialTheme.typography.labelSmall)
+                            Column {
+                                Column(
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .clickable { onOpen(r.id) }
+                                        .padding(horizontal = 20.dp, vertical = 12.dp),
+                                ) {
+                                    TextMMD(
+                                        text = r.name.ifBlank { stringResource(R.string.untitled) },
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        maxLines = 2,
+                                        overflow = TextOverflow.Ellipsis,
+                                    )
+                                    val summary = remember(r) { Words.summary(context, r) }
+                                    if (summary.isNotEmpty()) TextMMD(text = summary, style = MaterialTheme.typography.labelSmall)
+                                }
+                                DottedRule(start = 20.dp, end = 20.dp)
                             }
                         }
                     }
