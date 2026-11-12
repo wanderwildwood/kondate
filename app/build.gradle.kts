@@ -18,8 +18,14 @@ android {
         // that: Supernote's tablets run Android 11 (API 30), and it installs there too.
         minSdk = 30
         targetSdk = 31
-        versionCode = 20
-        versionName = "0.2.18"
+        versionCode = 21
+        versionName = "0.2.19"
+
+        ndk {
+            // The Kompakt is arm64. The emulator an x86_64 debug build is tried on is added
+            // below, so a release carries one copy of the native code rather than four.
+            abiFilters += "arm64-v8a"
+        }
     }
 
     // A real keystore in signing/ signs every build type when it is present, so the
@@ -44,6 +50,7 @@ android {
     buildTypes {
         getByName("debug") {
             isMinifyEnabled = false
+            ndk { abiFilters += "x86_64" }
             realSigningConfig?.let { signingConfig = it }
         }
         getByName("release") {

@@ -31,9 +31,11 @@ data class Link(val id: String, val remote: RemoteRecipe, val modified: String, 
             remote = RemoteRecipe(
                 fileId = o.getString("fileId"),
                 folder = o.getString("folder"),
-                folderEtag = o.getString("folderEtag"),
+                // In the one form every etag is compared in: a link kept by an earlier version may
+                // hold a file's etag as it came with the file, marked by the server's compression.
+                folderEtag = o.getString("folderEtag").let { if (it.isEmpty()) it else canonicalEtag(it) },
                 file = o.getString("file"),
-                fileEtag = o.getString("fileEtag"),
+                fileEtag = o.getString("fileEtag").let { if (it.isEmpty()) it else canonicalEtag(it) },
             ),
             modified = o.getString("modified"),
             raw = o.getString("raw"),
