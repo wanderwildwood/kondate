@@ -95,7 +95,7 @@ them, so all three survive an edit there. Whatever Cookbook adds that this app d
 ## What it does not do
 
 - **No pictures.** A page's picture address is kept with the recipe, but nothing is downloaded
-  or shown. On this screen a photograph of a stew is a grey shape, and the recipe is the words.
+  or shown. On this screen a photograph of a stew is a gray shape, and the recipe is the words.
 - **No account of its own.** The only sync is with a Nextcloud of your own, and only once you
   sign in to it.
 - Times are found in English words ("10 minutes", "an hour and a half"). A recipe in another
@@ -153,7 +153,7 @@ For updates without doing this by hand, add this repository to
 
     https://github.com/wanderwildwood/kondate
 
-## Licence
+## License
 
 GPL-3.0-only. See [LICENSE](LICENSE).
 
