@@ -70,6 +70,11 @@ fun SettingsScreen(store: Store, onBack: () -> Unit, onAbout: () -> Unit, onOpen
     ) { padding ->
         PagedColumn(modifier = Modifier.padding(padding).fillMaxSize(), contentPadding = PaddingValues(horizontal = 20.dp)) {
             item { Spacer(Modifier.height(8.dp)) }
+            item(key = "dark") {
+                SwitchRow(stringResource(R.string.settings_dark), DarkMode.on, note = stringResource(R.string.settings_dark_note)) {
+                    DarkMode.set(context, it)
+                }
+            }
             item(key = "nextcloud") {
                 val a = account
                 SettingRow(
