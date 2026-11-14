@@ -234,4 +234,6 @@
     <string name="privacy_contact">Schreib an email@wanderthe.dev, zu deinen Daten oder zu allem anderen.</string>
     <string name="privacy_rights_title">Deine Rechte</string>
     <string name="privacy_rights">Nach der DSGVO kannst du verlangen, die über dich gespeicherten Daten zu sehen, sie berichtigen oder löschen zu lassen, ihre Nutzung einzuschränken oder ihr zu widersprechen, eine Kopie mitzunehmen, eine Einwilligung zu widerrufen und dich bei einer Datenschutzbehörde zu beschweren. Da die App alles, was sie speichert, nur auf deinem Telefon hält, kannst du das meiste selbst tun: ein Rezept in der App löschen, in den Einstellungen alle Rezepte in eine Datei sichern, dich von der Nextcloud abmelden, die Daten der App in den Android-Einstellungen löschen oder die App deinstallieren. Was die Rezeptseiten erhalten, die du lesen lässt, regeln deren eigene Datenschutzerklärungen. Ein eigener Server gehört dir: was er speichert, bestimmst du.</string>
+    <string name="settings_dark">Dunkelmodus</string>
+    <string name="settings_dark_note">Weiß auf Schwarz, in dieser App. Home hat einen Schalter für alle Apps.</string>
 </resources>
