@@ -71,6 +71,9 @@
     <string name="time_hours_minutes">%1$d hr %2$d min</string>
     <!-- For a recipe that does not say how many it serves. %1$s is a multiple, as "1 1/2" -->
     <string name="scale_factor">Amounts ×%1$s</string>
+    <!-- What a screen reader says for the − and + either side of the servings -->
+    <string name="cd_scale_down">Scale down</string>
+    <string name="cd_scale_up">Scale up</string>
     <string name="cook">Cook, step by step</string>
     <string name="ingredients">Ingredients</string>
     <string name="method">Method</string>

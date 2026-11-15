@@ -45,6 +45,8 @@ import com.wanderwildwood.kondate.data.recipesDocument
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 
 /** The scales offered for a recipe that does not say how many it serves. */
 private val FACTORS = listOf(0.25, 0.5, 1.0, 1.5, 2.0, 3.0, 4.0)
@@ -196,11 +198,13 @@ fun RecipeScreen(store: Store, id: String, onBack: () -> Unit, onEdit: () -> Uni
 /** How many it serves, with a − and a + either side. */
 @Composable
 private fun Scaler(label: String, onLess: () -> Unit, onMore: () -> Unit) {
+    val less = stringResource(R.string.cd_scale_down)
+    val more = stringResource(R.string.cd_scale_up)
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
     ) {
-        OutlinedButtonMMD(onClick = onLess, modifier = Modifier.size(48.dp)) {
+        OutlinedButtonMMD(onClick = onLess, modifier = Modifier.size(48.dp).semantics { contentDescription = less }) {
             TextMMD(text = "−", style = MaterialTheme.typography.titleMedium)
         }
         TextMMD(
@@ -209,7 +213,7 @@ private fun Scaler(label: String, onLess: () -> Unit, onMore: () -> Unit) {
             textAlign = TextAlign.Center,
             modifier = Modifier.weight(1f).padding(horizontal = 8.dp),
         )
-        OutlinedButtonMMD(onClick = onMore, modifier = Modifier.size(48.dp)) {
+        OutlinedButtonMMD(onClick = onMore, modifier = Modifier.size(48.dp).semantics { contentDescription = more }) {
             TextMMD(text = "+", style = MaterialTheme.typography.titleMedium)
         }
     }
