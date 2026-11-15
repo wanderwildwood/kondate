@@ -52,6 +52,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.Normalizer
+import androidx.compose.runtime.withFrameNanos
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 
 /**
  * Every recipe, by name, and the way in to a new one. A search over names and ingredients
@@ -259,9 +261,17 @@ private fun LinkDialog(onDismiss: () -> Unit, onRead: (String) -> Unit) {
     var text by remember { mutableStateOf("") }
     var wrong by remember { mutableStateOf(false) }
     val focus = remember { FocusRequester() }
-    LaunchedEffect(Unit) { focus.requestFocus() }
     EInkDialog(onDismiss = onDismiss) {
         TextMMD(text = stringResource(R.string.link_title), style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+        // The field is what the dialog is for: it takes the focus as it opens and the keyboard
+        // comes up. Asked from inside the dialog, a frame after it is drawn: the field lives in
+        // the dialog's own window, which a request from the screen beneath does not reach.
+        val keyboardNow = LocalSoftwareKeyboardController.current
+        LaunchedEffect(Unit) {
+            withFrameNanos { }
+            runCatching { focus.requestFocus() }
+            keyboardNow?.show()
+        }
         Spacer(Modifier.height(8.dp))
         TextFieldMMD(
             value = text,
