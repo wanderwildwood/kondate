@@ -240,4 +240,5 @@
     <string name="settings_dark_note">Weiß auf Schwarz, in dieser App. Home hat einen Schalter für alle Apps.</string>
     <string name="page_arrow_previous">Vorherige Seite</string>
     <string name="page_arrow_next">Nächste Seite</string>
+    <string name="selection_more">Mehr</string>
 </resources>
