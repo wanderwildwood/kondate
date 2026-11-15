@@ -37,6 +37,17 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    // A line that stays until the next press hears of it here; see NextPress.
+    override fun dispatchTouchEvent(ev: android.view.MotionEvent): Boolean {
+        com.wanderwildwood.kondate.ui.NextPress.seen(ev)
+        return super.dispatchTouchEvent(ev)
+    }
+
+    override fun dispatchKeyEvent(event: android.view.KeyEvent): Boolean {
+        com.wanderwildwood.kondate.ui.NextPress.seen(event)
+        return super.dispatchKeyEvent(event)
+    }
+
     override fun onStart() {
         super.onStart()
         // Nothing happens here unless the reader has signed in to a Nextcloud.

@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.AlarmClock
-import android.widget.Toast
 import com.wanderwildwood.kondate.R
 
 /**
@@ -73,5 +72,5 @@ object Elsewhere {
         false
     }
 
-    fun say(context: Context, text: Int) = Toast.makeText(context, context.getString(text), Toast.LENGTH_SHORT).show()
+    fun say(context: Context, text: Int) = FootNotice.say(context, context.getString(text))
 }

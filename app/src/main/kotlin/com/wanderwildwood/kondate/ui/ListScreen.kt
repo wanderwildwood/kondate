@@ -45,11 +45,9 @@ import com.wanderwildwood.kondate.data.Recipe
 import com.wanderwildwood.kondate.data.Store
 import com.wanderwildwood.kondate.importer.Reader
 import com.wanderwildwood.kondate.sync.Cloud
-import com.wanderwildwood.kondate.sync.PULLED_LINE_MS
 import com.wanderwildwood.kondate.sync.Pulled
 import com.wanderwildwood.kondate.sync.pulledAfter
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.Normalizer
 import androidx.compose.runtime.withFrameNanos
@@ -77,14 +75,22 @@ fun ListScreen(
     var pulled by remember { mutableStateOf<Pulled?>(null) }
     val pullScope = rememberCoroutineScope()
     var pulling by remember { mutableStateOf<Job?>(null) }
+    // True while the line only waits for the next press, which may be a new pull.
+    var reporting by remember { mutableStateOf(false) }
     val pull: () -> Unit = {
         val run = onPull
-        if (run != null && pulling?.isActive != true) {
+        if (run != null && (pulling?.isActive != true || reporting)) {
+            pulling?.cancel()
+            reporting = false
             pulling = pullScope.launch {
                 Log.i("kondate", "pulled at the top of the list: syncing")
                 pulled = Pulled.SYNCING
                 pulled = pulledAfter(run())
-                delay(PULLED_LINE_MS)
+                // What the server said stays until the next press: on this panel a line on a
+                // timer could be gone before it had been read, and "could not reach" most of all.
+                reporting = true
+                NextPress.await()
+                reporting = false
                 pulled = null
             }
         }

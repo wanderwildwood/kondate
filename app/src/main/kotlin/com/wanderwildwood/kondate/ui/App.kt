@@ -2,7 +2,6 @@ package com.wanderwildwood.kondate.ui
 
 import android.content.Context
 import android.net.Uri
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -61,7 +60,7 @@ fun RecipesApp(incoming: Incoming?, onTaken: () -> Unit) {
             is Incoming.Link -> {
                 val known = store.byUrl(i.url)
                 stack = listOf(Screen.List) + if (known != null) {
-                    Toast.makeText(context, context.getString(R.string.already_saved), Toast.LENGTH_SHORT).show()
+                    FootNotice.say(context, context.getString(R.string.already_saved))
                     Screen.Recipe(known.id)
                 } else {
                     Screen.Reading(i.url)
@@ -92,7 +91,7 @@ fun RecipesApp(incoming: Incoming?, onTaken: () -> Unit) {
             onLink = { url ->
                 val known = store.byUrl(url)
                 if (known != null) {
-                    Toast.makeText(context, context.getString(R.string.already_saved), Toast.LENGTH_SHORT).show()
+                    FootNotice.say(context, context.getString(R.string.already_saved))
                     go(Screen.Recipe(known.id))
                 } else {
                     go(Screen.Reading(url))
@@ -151,12 +150,12 @@ suspend fun bringIn(context: Context, store: Store, uri: Uri): String? {
         }.getOrNull()?.let { JsonLd.recipesAndTicksInJson(it) }.orEmpty()
     }
     if (recipes.isEmpty()) {
-        Toast.makeText(context, context.getString(R.string.import_none), Toast.LENGTH_LONG).show()
+        FootNotice.say(context, context.getString(R.string.import_none))
         return null
     }
     val before = store.all.value.map { it.id }.toSet()
     val count = withContext(Dispatchers.IO) { store.bringIn(recipes) }
-    Toast.makeText(context, context.resources.getQuantityString(R.plurals.imported, count, count), Toast.LENGTH_SHORT).show()
+    FootNotice.say(context, context.resources.getQuantityString(R.plurals.imported, count, count))
     if (recipes.size != 1) return null
     return recipes[0].first.id.takeIf { it.isNotEmpty() && store.get(it) != null }
         ?: store.all.value.map { it.id }.firstOrNull { it !in before }
