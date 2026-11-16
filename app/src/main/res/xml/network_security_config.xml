@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    No cleartext anywhere: everything this app asks for (recipe pages and Nextcloud) goes over https.
+    An address typed or shared with http:// is tried as https, and a redirect to http is
+    followed as https (importer/Reader.kt); a Nextcloud address with http:// is refused before
+    anything is sent. This file says the same thing to Android, so nothing slips past either.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false" />
+</network-security-config>
