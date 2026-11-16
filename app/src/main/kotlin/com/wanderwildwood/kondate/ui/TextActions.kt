@@ -55,7 +55,7 @@ import androidx.compose.ui.text.TextRange
 fun Modifier.textActions(field: TextFieldState? = null): Modifier {
     val context = LocalContext.current
     val view = LocalView.current
-    // This app is a text action too; it never offers itself.
+    // This app never offers itself.
     val notShown = NOT_SHOWN + context.packageName
     val apps = remember {
         val query = Intent(Intent.ACTION_PROCESS_TEXT).setType("text/plain")
@@ -182,6 +182,7 @@ private fun showRest(view: View, items: List<TextContextMenuItem>, session: Text
         else (pressY - 88 * dp - list.measuredHeight).toInt().coerceAtLeast(0)
     val x = ((root.width - list.measuredWidth) / 2).coerceAtLeast(0)
     popup.showAtLocation(root, Gravity.TOP or Gravity.START, x, y)
+    DarkMode.window(list)
 }
 
 /** How many of Compose's items stay on the bar before the ⋮; Mudita's bar fits three buttons. */
