@@ -2,6 +2,8 @@ package com.wanderwildwood.kondate.sync
 
 import okhttp3.Credentials
 import okhttp3.FormBody
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
@@ -44,9 +46,22 @@ class Refused(message: String) : IOException(message)
 
 internal const val AGENT = "Recipes (kondate)"
 
+/**
+ * Stops a request that would go out in plain http to anywhere but a home or VPN address,
+ * whatever a saved account or a redirect names. Asked twice: before a connection is opened,
+ * and again for each address a redirect leads to.
+ */
+private val homeOnlyOverHttp = Interceptor { chain ->
+    val url = chain.request().url
+    if (!url.isHttps && !LoginFlow.plainHttpAllowed(url.toString())) throw Unreachable("plain http")
+    chain.proceed(chain.request())
+}
+
 internal val http = OkHttpClient.Builder()
     .connectTimeout(15, TimeUnit.SECONDS)
     .readTimeout(30, TimeUnit.SECONDS)
+    .addInterceptor(homeOnlyOverHttp)
+    .addNetworkInterceptor(homeOnlyOverHttp)
     .build()
 
 /**
@@ -60,7 +75,7 @@ object LoginFlow {
     data class Started(val loginUrl: String, val pollUrl: String, val token: String)
 
     fun start(server: String): Started {
-        if (isPlain(server)) throw Refused("needs https")
+        if (!plainHttpAllowed(normalise(server))) throw Refused("needs https")
         val request = Request.Builder()
             .url("${normalise(server)}/index.php/login/v2")
             .post(FormBody.Builder().build())
@@ -100,7 +115,38 @@ object LoginFlow {
         } catch (e: IOException) {
             if (e is Refused) throw e
             null
+        }?.also { if (!plainHttpAllowed(it.server)) throw Refused("needs https") }
+    }
+
+    /**
+     * Whether [address] may be used: any https one, or an http one whose host is on a home or VPN
+     * network (a private or Tailscale address, "localhost", a name with no dots, or one ending
+     * .local, .lan, .home.arpa, .internal or .ts.net). Plain http to a public host would send the
+     * login in the clear across the internet. Memo's and Cabinet's rule.
+     */
+    fun plainHttpAllowed(address: String): Boolean {
+        val url = address.trim().toHttpUrlOrNull() ?: return false
+        if (url.isHttps) return true
+        val host = url.host.lowercase()
+        if (host.contains(':') || host.matches(Regex("^\\d{1,3}(\\.\\d{1,3}){3}$"))) return isPrivateAddress(host)
+        return !host.contains('.') || listOf(".local", ".lan", ".home.arpa", ".internal", ".ts.net").any { host.endsWith(it) }
+    }
+
+    /** A private, loopback, link-local or Tailscale (100.64/10) address literal; never a name. */
+    internal fun isPrivateAddress(literal: String): Boolean {
+        val addr = literal.substringBefore('%').lowercase().trim()
+        val v4 = Regex("^\\d{1,3}(\\.\\d{1,3}){3}$").matches(addr)
+        val v6 = ':' in addr && Regex("^[0-9a-f.:]+$").matches(addr)
+        if (!v4 && !v6) return false
+        val bytes = runCatching { java.net.InetAddress.getByName(addr).address }.getOrNull() ?: return false
+        val a = bytes[0].toInt() and 0xFF
+        val b = bytes[1].toInt() and 0xFF
+        if (bytes.size == 4) {
+            return a == 10 || a == 127 || (a == 172 && b in 16..31) || (a == 192 && b == 168) ||
+                (a == 169 && b == 254) || (a == 100 && b in 64..127)
         }
+        val loopback = bytes.take(15).all { it.toInt() == 0 } && bytes[15].toInt() == 1
+        return loopback || (a and 0xFE) == 0xFC || (a == 0xFE && (b and 0xC0) == 0x80)
     }
 
     /** What was typed, as an address: "cloud.example" becomes "https://cloud.example". */
@@ -109,7 +155,7 @@ object LoginFlow {
         return if (trimmed.startsWith("https://", ignoreCase = true) || isPlain(trimmed)) trimmed else "https://$trimmed"
     }
 
-    /** True when what was typed names plain http, which this app never uses. */
+    /** True when what was typed names plain http, which is used only for a home or VPN address. */
     fun isPlain(server: String): Boolean = server.trim().startsWith("http://", ignoreCase = true)
 }
 

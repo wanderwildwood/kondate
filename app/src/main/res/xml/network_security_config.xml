@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    No cleartext anywhere: everything this app asks for (recipe pages and Nextcloud) goes over https.
-    An address typed or shared with http:// is tried as https, and a redirect to http is
-    followed as https (importer/Reader.kt); a Nextcloud address with http:// is refused before
-    anything is sent. This file says the same thing to Android, so nothing slips past either.
+    Plain http is permitted here for one case only: a Nextcloud at home or on a VPN, at a private
+    or Tailscale address or a local name. Android cannot express "private addresses only" in
+    this file, so the rule is kept in code: sync/Nextcloud.kt refuses to sign in to, or send
+    anything to, a plain http address out on the internet, also when a redirect leads there.
+    Recipe pages are still asked for over https only: an address typed or shared with http:// is
+    tried as https, and a redirect to http is followed as https (importer/Reader.kt).
+    System certificates only.
 -->
 <network-security-config>
-    <base-config cleartextTrafficPermitted="false" />
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
 </network-security-config>

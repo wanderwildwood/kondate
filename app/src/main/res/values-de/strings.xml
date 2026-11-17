@@ -160,7 +160,7 @@
     <string name="cloud_app_password_note">Erstelle eines in Nextcloud unter Persönliche Einstellungen, Sicherheit, Geräte und Sitzungen.</string>
     <string name="cloud_waiting">Schließe die Anmeldung im Browser ab; hier wird darauf gewartet.</string>
     <string name="cloud_no_browser">Auf diesem Telefon ist kein Browser. Gib stattdessen ein App-Passwort ein.</string>
-    <string name="cloud_needs_https">Rezepte meldet sich nur bei einem Server über https an. Verwende eine Adresse, die mit https:// beginnt, oder gib nur den Namen ein.</string>
+    <string name="cloud_needs_https">Rezepte meldet sich über https an. Einfaches http wird nur für einen Server zu Hause oder in einem VPN verwendet. Verwende eine Adresse, die mit https:// beginnt, oder gib nur den Namen ein.</string>
     <string name="read_pdf">%1$s gab eine PDF, die Rezepte nicht liest. Öffne sie in deiner PDF-App und teile den Text mit Rezepte, oder kopiere ihn und wähle „Rezepttext einfügen“.</string>
     <string name="read_needs_https">%1$s antwortet nur über einfaches http, das Rezepte nicht verwendet. Gib das Rezept stattdessen selbst ein.</string>
     <string name="cloud_unreachable">Dieser Server war nicht erreichbar.</string>
