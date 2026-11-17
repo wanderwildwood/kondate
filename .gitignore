@@ -4,7 +4,7 @@
 build/
 local.properties
 
-signing/signing.properties
-signing/signing.keystore
+# The signing key never enters the repository
+/signing/
 .cxx/
 .kotlin/
