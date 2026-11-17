@@ -102,6 +102,20 @@ class CookbookTest {
     }
 
     @Test
+    fun aTimeInWordsComesBackFromTheServer() {
+        val o = Cookbook.toJson(Recipe(id = "x", name = "Oats", prepTime = "overnight", cookTime = "PT10M"))
+        assertTrue(o.isNull("prepTime"))
+        assertEquals("overnight", o.getString("prepTimeText"))
+        assertFalse(o.has("cookTimeText"))
+        val back = Cookbook.fromJson(o.toString())!!
+        assertEquals("overnight", back.prepTime)
+        assertEquals("PT10M", back.cookTime)
+        // Set in Cookbook since: its time wins over the old words.
+        o.put("prepTime", "PT8H")
+        assertEquals("PT8H", Cookbook.fromJson(o.toString())!!.prepTime)
+    }
+
+    @Test
     fun aPlainNumberYieldHasNoWordsBesideIt() {
         val o = Cookbook.toJson(Recipe(id = "x", name = "Toast", recipeYield = "2"))
         assertEquals(2, o.getInt("recipeYield"))

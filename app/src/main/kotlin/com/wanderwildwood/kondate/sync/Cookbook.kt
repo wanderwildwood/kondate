@@ -40,9 +40,9 @@ object Cookbook {
         o.put("description", r.description)
         o.put("url", r.url)
         o.put("image", r.image)
-        o.put("prepTime", r.prepTime.takeIf { Durations.isoSeconds(it) != null } ?: JSONObject.NULL)
-        o.put("cookTime", r.cookTime.takeIf { Durations.isoSeconds(it) != null } ?: JSONObject.NULL)
-        o.put("totalTime", r.totalTime.takeIf { Durations.isoSeconds(it) != null } ?: JSONObject.NULL)
+        putTime(o, "prepTime", r.prepTime)
+        putTime(o, "cookTime", r.cookTime)
+        putTime(o, "totalTime", r.totalTime)
         o.put("recipeCategory", r.category)
         o.put("keywords", r.keywords.split(',').map { it.trim() }.filter { it.isNotEmpty() }.distinct().joinToString(","))
         val servings = servingsOf(r.recipeYield)
@@ -88,13 +88,31 @@ object Cookbook {
         return read.copy(
             id = (o.opt("identifier") as? String).orEmpty().trim(),
             recipeYield = yieldOf(o),
-            prepTime = compact(read.prepTime),
-            cookTime = compact(read.cookTime),
-            totalTime = compact(read.totalTime),
+            prepTime = timeOf(o, "prepTime", read.prepTime),
+            cookTime = timeOf(o, "cookTime", read.cookTime),
+            totalTime = timeOf(o, "totalTime", read.totalTime),
             steps = parts(read.steps),
             keywords = read.keywords.split(',').map { it.trim() }.filter { it.isNotEmpty() }.joinToString(", "),
         )
     }
+
+    /**
+     * A time as Cookbook keeps it: a duration it can read, or null with the words ("overnight")
+     * beside it in a field of this app's own, as the yield's words are, so a pull keeps them.
+     */
+    private fun putTime(o: JSONObject, key: String, value: String) {
+        if (Durations.isoSeconds(value) != null) {
+            o.put(key, value)
+            o.remove(key + TIME_TEXT)
+        } else {
+            o.put(key, JSONObject.NULL)
+            if (value.isNotBlank()) o.put(key + TIME_TEXT, value.trim()) else o.remove(key + TIME_TEXT)
+        }
+    }
+
+    /** The time read, or its words while Cookbook's own value is still empty. */
+    private fun timeOf(o: JSONObject, key: String, read: String): String =
+        compact(read).ifEmpty { if (o.isNull(key)) (o.opt(key + TIME_TEXT) as? String).orEmpty().trim() else "" }
 
     /** The words of the yield while they still agree with Cookbook's number, else the number. */
     private fun yieldOf(o: JSONObject): String {
@@ -170,6 +188,7 @@ object Cookbook {
     }
 
     private const val YIELD_TEXT = "recipeYieldText"
+    private const val TIME_TEXT = "Text"
     private const val PART = "## "
     private const val MAX_FOLDER = 100
     private val PART_LINE = Regex("""^#{1,6}\s+(.+)$""")
