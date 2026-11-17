@@ -165,7 +165,7 @@ object Reader {
     }
 
     // The app's own introduction, and the only one it gives.
-    internal const val USER_AGENT = "Recipes/0.2.10 (Android; reads one recipe page for its owner)"
+    internal val USER_AGENT = "Recipes/${com.wanderwildwood.kondate.BuildConfig.VERSION_NAME} (Android; reads one recipe page for its owner)"
 
     private val ADDRESS = Regex("""https?://[^\s<>"']+""", RegexOption.IGNORE_CASE)
 

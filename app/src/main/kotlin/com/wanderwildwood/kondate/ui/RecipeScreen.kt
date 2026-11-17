@@ -71,7 +71,8 @@ fun RecipeScreen(store: Store, id: String, onBack: () -> Unit, onEdit: () -> Uni
     var servings by rememberSaveable(id) { mutableStateOf(base ?: 0) }
     var factorAt by rememberSaveable(id) { mutableStateOf(FACTORS.indexOf(1.0)) }
     val factor = if (base != null && base > 0) servings.toDouble() / base else FACTORS[factorAt]
-    var ticked by remember(id) { mutableStateOf(store.ticked(id)) }
+    // Read again when a sync brings other ingredients (the store forgets the ticks then too).
+    var ticked by remember(id, recipe.ingredients) { mutableStateOf(store.ticked(id)) }
     var more by remember { mutableStateOf(false) }
 
     fun tick(i: Int) {
