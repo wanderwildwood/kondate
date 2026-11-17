@@ -11,7 +11,8 @@ import java.nio.charset.Charset
  *
  * The page is fetched once, as a browser would ask for it (Accept and Accept-Language as a
  * browser sends them), and nothing else is: no pictures, no scripts, nothing sent but the
- * request for the page. A site that answers 403 is asked again the way a phone's Chrome asks, then its Safari. What comes back is searched for the
+ * request for the page, saying plainly that it is Recipes. A site that refuses it is not asked
+ * again under another name. What comes back is searched for the
  * recipe the page publishes for search engines (JSON-LD), then for the older microdata; a page
  * with neither gives back its title, so the recipe can be typed in under it.
  */
@@ -46,21 +47,12 @@ object Reader {
     /** [read] with the https rule switchable, so the tests can talk to a server on this machine. */
     internal fun readFrom(address: String, upgradeToHttps: Boolean): Result {
         val failed = if (upgradeToHttps && isPlain(address)) Result.Failed(NEEDS_HTTPS) else null
-        var page = try {
+        // Asked once, as Recipes. A site that turns the app away is not asked again posing as a
+        // browser: its answer is reported, and the app offers pasted text instead.
+        val page = try {
             fetch(address, USER_AGENT, upgradeToHttps)
         } catch (_: Exception) {
             return failed ?: Result.Failed(0)
-        }
-        // A 403 is asked again, at most twice more, with a browser's introduction: first an Android
-        // phone's Chrome, then an iPhone's Safari. The app's own name is tried first because some
-        // sites turn a browser-looking request away when it does not otherwise behave like one.
-        for (agent in listOf(CHROME_USER_AGENT, SAFARI_USER_AGENT)) {
-            if (page.code != 403) break
-            page = try {
-                fetch(address, agent, upgradeToHttps)
-            } catch (_: Exception) {
-                page
-            }
         }
         if (page.code !in 200..299) return failed ?: Result.Failed(page.code)
         if (page.pdf) return Result.Failed(IS_PDF)
@@ -172,12 +164,8 @@ object Reader {
             (path.endsWith(".pdf", ignoreCase = true) && (type.isEmpty() || type == "application/octet-stream"))
     }
 
-    // The app's own introduction, then two borrowed ones; each ends with the app's name, the only part not borrowed.
+    // The app's own introduction, and the only one it gives.
     internal const val USER_AGENT = "Recipes/0.2.10 (Android; reads one recipe page for its owner)"
-    internal const val CHROME_USER_AGENT =
-        "Mozilla/5.0 (Linux; Android 12; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36 Recipes/0.2.10"
-    internal const val SAFARI_USER_AGENT =
-        "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1 Recipes/0.2.10"
 
     private val ADDRESS = Regex("""https?://[^\s<>"']+""", RegexOption.IGNORE_CASE)
 

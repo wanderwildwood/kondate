@@ -62,27 +62,11 @@ class ReaderFetchTest {
         assertTrue(h["accept-language"]!!.startsWith("en"))
     }
 
-    @Test fun aSiteThatWantsABrowserIsServedOnceItLooksLikeOne() {
+    @Test fun aSiteThatWantsABrowserIsNotAskedAgainPosingAsOne() {
         handler = { r -> if (looksLikeBrowser(r)) reply("200 OK", "text/html", recipePage) else reply("403 Forbidden", "text/plain", "bots no") }
-        assertTrue(Reader.readFrom("$base/soup", false) is Reader.Result.Found)
-        assertEquals(2, seen.size)
-        assertTrue(seen[1].headers["user-agent"]!!.contains("Chrome"))
-        assertTrue(seen[1].headers["user-agent"]!!.endsWith("Recipes/0.2.10"))
-    }
-
-    @Test fun a403IsAskedAgainAsChromeThenAsMobileSafari() {
-        handler = { r -> if (r.headers["user-agent"].orEmpty().contains("iPhone")) reply("200 OK", "text/html", recipePage) else reply("403 Forbidden", "text/plain", "x") }
-        assertTrue(Reader.readFrom("$base/soup", false) is Reader.Result.Found)
-        assertEquals(3, seen.size)
-        assertTrue(seen[1].headers["user-agent"]!!.contains("Android"))
-        assertTrue(seen[2].headers["user-agent"]!!.contains("Safari"))
-        assertTrue(seen[2].headers["user-agent"]!!.endsWith("Recipes/0.2.10"))
-    }
-
-    @Test fun aSiteThatKeepsSaying403GetsExactlyThreeAsksAndItsOwnAnswerIsReported() {
-        handler = { reply("403 Forbidden", "text/plain", "no") }
         assertEquals(Reader.Result.Failed(403), Reader.readFrom("$base/soup", false))
-        assertEquals(3, seen.size)
+        assertEquals(1, seen.size)
+        assertTrue(seen.single().headers["user-agent"]!!.startsWith("Recipes/"))
     }
 
     @Test fun otherAnswersAreNotRetriedAndAreReportedAsTheSiteGaveThem() {
