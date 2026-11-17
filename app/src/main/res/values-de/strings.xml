@@ -159,9 +159,9 @@
     <string name="cloud_app_password_note">Erstelle eines in Nextcloud unter Persönliche Einstellungen, Sicherheit, Geräte und Sitzungen.</string>
     <string name="cloud_waiting">Schließe die Anmeldung im Browser ab; hier wird darauf gewartet.</string>
     <string name="cloud_no_browser">Auf diesem Telefon ist kein Browser. Gib stattdessen ein App-Passwort ein.</string>
-    <string name="cloud_needs_https">Rezepte meldet sich über https an. Einfaches http wird nur für einen Server zu Hause oder in einem VPN verwendet. Verwende eine Adresse, die mit https:// beginnt, oder gib nur den Namen ein.</string>
-    <string name="read_pdf">%1$s gab eine PDF, die Rezepte nicht liest. Öffne sie in deiner PDF-App und teile den Text mit Rezepte, oder kopiere ihn und wähle „Rezepttext einfügen“.</string>
-    <string name="read_needs_https">%1$s antwortet nur über einfaches http, das Rezepte nicht verwendet. Gib das Rezept stattdessen selbst ein.</string>
+    <string name="cloud_needs_https">Recipes meldet sich über https an. Einfaches http wird nur für einen Server zu Hause oder in einem VPN verwendet. Verwende eine Adresse, die mit https:// beginnt, oder gib nur den Namen ein.</string>
+    <string name="read_pdf">%1$s gab eine PDF, die Recipes nicht liest. Öffne sie in deiner PDF-App und teile den Text mit Recipes, oder kopiere ihn und wähle „Rezepttext einfügen“.</string>
+    <string name="read_needs_https">%1$s antwortet nur über einfaches http, das Recipes nicht verwendet. Gib das Rezept stattdessen selbst ein.</string>
     <string name="cloud_unreachable">Dieser Server war nicht erreichbar.</string>
     <string name="cloud_refused">Der Server hat diesen Anmeldenamen und das Passwort nicht angenommen.</string>
     <string name="cloud_account">Angemeldet als</string>
@@ -192,7 +192,7 @@
     <!-- ============================================================ -->
     <!-- About -->
 
-    <string name="about_title">Rezepte %1$s</string>
+    <string name="about_title">Recipes %1$s</string>
     <string name="about_what">Rezepte, die auf diesem Telefon bleiben. Die App geht online, um eine Rezeptseite zu lesen, die du ihr schickst — sie behält die Wörter und nicht die Bilder —, und um dich mit deiner eigenen Nextcloud abzugleichen, wenn du dich bei einer anmeldest.</string>
     <string name="about_privacy_head">Datenschutz</string>
     <string name="about_privacy">Deine Rezepte bleiben auf diesem Telefon. Die App sammelt nichts über dich und hat keine Werbung und keine Analysen. Sie geht nur online, um eine Rezeptseite zu lesen, deren Adresse du ihr geschickt hast (eine Seite, keine Bilder oder Skripte, nur über https, und sie sagt klar, dass sie diese App ist). Rezepttext, den du hier einfügst oder teilst, verlässt das Telefon nie, und sobald du dich bei deiner eigenen Nextcloud anmeldest, nur dorthin, um deine Rezepte mit ihr abzugleichen. Das App-Passwort der Nextcloud bleibt auf dem Telefon, versiegelt mit einem Schlüssel, der es nicht verlassen kann; du kannst es auf dem Server widerrufen. Sicherungen und Exporte gehen nur dorthin, wo du sie zu speichern wählst. „füttere die Lamas“ öffnet eine Spendenseite (square.link) in deinem Browser, nur wenn du darauf drückst. Die App sendet nichts dorthin; wenn du spendest, wickelt Square die Zahlung auf dieser Seite ab, nicht diese App.</string>
@@ -212,7 +212,7 @@
     <string name="licences_title">Lizenzen</string>
     <string name="licences_source_head">Quellcode</string>
     <string name="licences_source">Quelle: %1$s</string>
-    <string name="licences_licence">Rezepte ist freie Software unter der GNU General Public License, ausschließlich Version 3. Copyright wander wildwood.</string>
+    <string name="licences_licence">Recipes ist freie Software unter der GNU General Public License, ausschließlich Version 3. Copyright wander wildwood.</string>
     <string name="licences_back">Zurück</string>
     <string name="licences_full_head">Vollständige Texte</string>
     <string name="licences_full_gpl">GNU General Public License v3 (vollständiger Text)</string>
