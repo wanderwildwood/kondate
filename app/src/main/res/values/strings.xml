@@ -57,6 +57,8 @@
     <string name="type_it_in">Type it in instead</string>
     <string name="no_recipe_on_page">That page has no recipe this app can read. Its name and address are below; the rest can be typed in.</string>
     <string name="already_saved">That recipe is already saved.</string>
+    <!-- Said when the phone's storage would not take a recipe being saved; the editor stays open. -->
+    <string name="recipe_not_saved">The recipe could not be saved.</string>
 
     <!-- ============================================================ -->
     <!-- A recipe -->

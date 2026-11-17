@@ -56,6 +56,7 @@
     <string name="type_it_in">Stattdessen selbst eingeben</string>
     <string name="no_recipe_on_page">Auf dieser Seite ist kein Rezept, das diese App lesen kann. Name und Adresse stehen unten; der Rest lässt sich selbst eingeben.</string>
     <string name="already_saved">Dieses Rezept ist schon gespeichert.</string>
+    <string name="recipe_not_saved">Das Rezept konnte nicht gespeichert werden.</string>
 
     <!-- ============================================================ -->
     <!-- A recipe -->

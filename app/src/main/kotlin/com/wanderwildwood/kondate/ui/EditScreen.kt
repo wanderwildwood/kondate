@@ -66,7 +66,7 @@ fun EditScreen(store: Store, id: String?, draft: Recipe?, note: Int, onDone: (St
             return
         }
         val lines = ingredients.lines().map { it.trim() }.filter { it.isNotEmpty() }
-        val kept = store.save(
+        val kept = try { store.save(
             start.copy(
                 name = name.trim(),
                 recipeYield = serves.trim(),
@@ -80,7 +80,11 @@ fun EditScreen(store: Store, id: String?, draft: Recipe?, note: Int, onDone: (St
                 url = url.trim(),
                 keywords = Labels.join(Labels.parse(labels)),
             ),
-        )
+        ) } catch (_: java.io.IOException) {
+            // The phone's storage would not take it: said, and the editor stays open with the text.
+            FootNotice.say(context, context.getString(R.string.recipe_not_saved))
+            return
+        }
         // The ticks count places in the list; a changed list makes them point at other lines.
         if (lines != start.ingredients) store.setTicked(kept.id, emptySet())
         onDone(kept.id)

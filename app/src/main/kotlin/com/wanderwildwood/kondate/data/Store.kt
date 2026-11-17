@@ -109,7 +109,7 @@ class Store private constructor(private val context: Context) {
         tmp.writeText(recipe.toJson().toString(1))
         if (!tmp.renameTo(file)) {
             file.delete()
-            tmp.renameTo(file)
+            if (!tmp.renameTo(file)) throw java.io.IOException("could not keep ${file.name}")
         }
     }
 

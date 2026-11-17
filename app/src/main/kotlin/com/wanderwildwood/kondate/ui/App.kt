@@ -55,7 +55,8 @@ fun RecipesApp(incoming: Incoming?, onTaken: () -> Unit) {
 
     LaunchedEffect(incoming) {
         val i = incoming ?: return@LaunchedEffect
-        onTaken()
+        // Taken only once handled: clearing it first changes this effect's key, which would
+        // cancel a file still being read in.
         when (i) {
             is Incoming.Link -> {
                 val known = store.byUrl(i.url)
@@ -76,6 +77,7 @@ fun RecipesApp(incoming: Incoming?, onTaken: () -> Unit) {
                 stack = listOf(Screen.List) + listOfNotNull(opened?.let { Screen.Recipe(it) })
             }
         }
+        onTaken()
     }
 
     BackHandler(enabled = stack.size > 1) { back() }
