@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Recipes</string>
+    <string name="app_name" translatable="false">Recipes</string>
     <!-- Under the app's icon in the share sheet -->
     <string name="share_label">Save recipe</string>
 
