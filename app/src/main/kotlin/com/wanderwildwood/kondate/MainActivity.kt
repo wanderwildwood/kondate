@@ -63,7 +63,7 @@ class MainActivity : ComponentActivity() {
 
     /**
      * A page shared from the browser (its address, perhaps with its title), words shared from
-     * anywhere else, or a file of recipes opened from Files or shared from another app.
+     * anywhere else, or a text file shared from another app.
      */
     private fun incomingFrom(intent: Intent?): Incoming? {
         intent ?: return null

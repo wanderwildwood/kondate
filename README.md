@@ -46,8 +46,7 @@ on any device with Android 11 or later, Supernote's tablets among them.
   Android's own — and cooking carries on here.
 - **Search** over names and ingredients: "lemon" finds every recipe with a lemon in it.
 - **In and out of a file.** Settings saves every recipe to one file, and brings recipes in from
-  one. A single recipe can be saved as a file or sent as text from its ⋮. A recipe file opened
-  from Files, or shared from another app, is brought in.
+  one. A single recipe can be saved as a file or sent as text from its ⋮.
 - **Sync with your own Nextcloud**, if you sign in to one (Settings → Nextcloud). The recipes go
   in the folder [Nextcloud Cookbook](https://apps.nextcloud.com/apps/cookbook) keeps its own in,
   in its layout, so they show in Cookbook too, and a recipe added or changed there comes back

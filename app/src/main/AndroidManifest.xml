@@ -70,20 +70,9 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
 
-            <!-- A file of recipes, saved from here or written by another app, opened or shared. -->
-            <intent-filter android:label="@string/share_label">
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="application/json" />
-                <data android:mimeType="application/ld+json" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="content" />
-                <data android:mimeType="application/json" />
-                <data android:mimeType="application/ld+json" />
-            </intent-filter>
+            <!-- No filter for JSON files: a recipe file is plain JSON, with no type or name ending of its
+                 own, and a filter for it would offer Recipes for every JSON file on the phone. A file
+                 of recipes comes in through Settings, which picks it. -->
         </activity>
 
     </application>
