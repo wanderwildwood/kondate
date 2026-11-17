@@ -29,7 +29,8 @@ data class RemoteRecipe(
 )
 
 /** The recipes in the folder, by [RemoteRecipe.fileId], and the name of every folder in it. */
-data class Listing(val recipes: Map<String, RemoteRecipe>, val folders: Set<String>)
+/** What the recipe folder holds; [rootMissing] when the folder itself was not there and was made anew. */
+data class Listing(val recipes: Map<String, RemoteRecipe>, val folders: Set<String>, val rootMissing: Boolean = false)
 
 /** The file was not what this phone last saw: changed, or gone, since. */
 class Changed(message: String) : IOException(message)
@@ -92,9 +93,9 @@ class NextcloudFolder(
         val top = try {
             propfind(root, 1)
         } catch (_: Missing) {
-            // The first sync to a folder not made yet.
+            // The first sync to a folder not made yet, or the folder gone since the last one.
             makeFolders()
-            return Listing(emptyMap(), emptySet())
+            return Listing(emptyMap(), emptySet(), rootMissing = true)
         }
         val rootPath = decodeHref(root)
         val recipes = mutableMapOf<String, RemoteRecipe>()

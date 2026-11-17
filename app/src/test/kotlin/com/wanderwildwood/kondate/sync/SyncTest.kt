@@ -23,6 +23,9 @@ class SyncTest {
         private var next = 100
         private fun tag() = "\"e${next++}\""
 
+        /** The recipe folder itself deleted on the server: the next listing makes it anew. */
+        var rootGone = false
+
         /** Some servers give every file in a moved folder a new etag. */
         var renameChangesEtags = false
 
@@ -47,6 +50,10 @@ class SyncTest {
             for ((name, f) in folders) {
                 val json = f.files.keys.firstOrNull { it == Cookbook.FILE } ?: f.files.keys.firstOrNull { it.endsWith(".json") } ?: continue
                 recipes[f.id] = RemoteRecipe(f.id, name, f.etag, json, f.files.getValue(json).second)
+            }
+            if (rootGone) {
+                rootGone = false
+                return Listing(recipes, folders.keys.toSet(), rootMissing = true)
             }
             return Listing(recipes, folders.keys.toSet())
         }
@@ -356,6 +363,17 @@ class SyncTest {
         sync()
         assertEquals(3, phone.recipes.size)
         assertEquals(setOf("Pancakes", "Soup", "Stew"), cloud.folders.keys)
+    }
+
+    @Test
+    fun theRecipeFolderGoneDeletesNothingHereEvenForOneRecipe() {
+        phone.save(recipe("a", "Pancakes", "2 eggs"))
+        sync()
+        cloud.folders.clear()
+        cloud.rootGone = true
+        sync()
+        assertEquals(1, phone.recipes.size)
+        assertEquals(setOf("Pancakes"), cloud.folders.keys)
     }
 
     @Test

@@ -116,8 +116,9 @@ class Cloud private constructor(context: Context) {
             State.UNREACHABLE
         } catch (_: IOException) {
             State.FAILED
-        } catch (_: RuntimeException) {
-            // A server answer this could not read. Said as a failed sync rather than a crash.
+        } catch (_: Exception) {
+            // A server answer this could not read (bad XML, a bad address in it, anything else).
+            // Said as a failed sync rather than a crash.
             State.FAILED
         }
         // Signed out, or moved to another folder, while it ran: what it found is not kept.

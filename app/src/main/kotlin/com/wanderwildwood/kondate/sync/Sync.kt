@@ -100,12 +100,14 @@ sealed interface Action {
  * Nothing is lost on either side. A change beats a deletion, whichever side made which; changes
  * on both sides keep both. When every linked folder has gone at once (the folder renamed or
  * swapped on the server, say), nothing is deleted here: the links are let go, and the recipes
- * are matched by name or sent again.
+ * are matched by name or sent again. The same when the recipe folder itself has gone, however
+ * few recipes were linked.
  */
 fun plan(locals: List<Recipe>, links: Map<String, Link>, listing: Listing): List<Action> {
     val here = locals.associateBy { it.id }
     val there = listing.recipes
-    val usable = if (links.size >= 3 && links.values.none { it.remote.fileId in there }) emptyMap() else links
+    val allGone = links.values.none { it.remote.fileId in there }
+    val usable = if (allGone && (links.size >= 3 || (listing.rootMissing && links.isNotEmpty()))) emptyMap() else links
 
     val out = mutableListOf<Action>()
     val linkedIds = mutableSetOf<String>()
