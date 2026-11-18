@@ -58,8 +58,15 @@ object Elsewhere {
         if (!open(context, intent)) say(context, R.string.no_clock)
     }
 
-    /** The page a recipe came from, in the browser. */
+    /**
+     * The page a recipe came from, in the browser. Only a web address is opened: a source that a
+     * page, a file or the server set to another app's link is said, not followed.
+     */
     fun page(context: Context, url: String) {
+        if (!isWebAddress(url)) {
+            say(context, R.string.source_not_web)
+            return
+        }
         openLink(context, url, context.getString(R.string.about_no_browser_address, url.removePrefix("https://")))
     }
 
@@ -74,3 +81,8 @@ object Elsewhere {
 
     fun say(context: Context, text: Int) = FootNotice.say(context, context.getString(text))
 }
+
+/** Whether [url] is a web page's address, http or https: the only kind a recipe's source opens. */
+fun isWebAddress(url: String): Boolean = WEB_ADDRESS.containsMatchIn(url)
+
+private val WEB_ADDRESS = Regex("^https?://[^/?#\\s]", RegexOption.IGNORE_CASE)

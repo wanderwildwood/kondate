@@ -80,6 +80,7 @@
     <string name="notes">Notizen</string>
     <!-- %1$s is the site the recipe came from, as example.com -->
     <string name="source">Von %1$s</string>
+    <string name="source_not_web">Die Quelle ist keine Webadresse und wird daher nicht geöffnet.</string>
     <string name="add_to_shopping">Zur Einkaufsliste hinzufügen</string>
     <string name="clear_ticks">Häkchen entfernen</string>
     <string name="shopping_nothing_left">Alles ist abgehakt.</string>
