@@ -159,6 +159,7 @@ class Cloud private constructor(context: Context) {
             _account.value = a
             _state.value = State.IDLE
         }
+        _signInProblem.value = null
         syncNow()
     }
 
@@ -167,7 +168,10 @@ class Cloud private constructor(context: Context) {
     /** Whether a sign-in begun in the browser is still being waited for. */
     val awaitingBrowser: StateFlow<Boolean> = _awaitingBrowser
     private val _signInProblem = MutableStateFlow<Int?>(null)
-    /** What went wrong with the last browser sign-in, as a string to show; null for nothing. */
+    /**
+     * What went wrong with the last browser sign-in, as the id of a string to show; null for
+     * nothing. Cleared by any sign-in that works, by signing out, and when the wait is given up.
+     */
     val signInProblem: StateFlow<Int?> = _signInProblem
 
     /**
@@ -207,6 +211,7 @@ class Cloud private constructor(context: Context) {
     /** Stops waiting for the browser, when an app password is to be typed in instead. */
     fun stopAwaitingBrowser() {
         browserSignIn?.cancel()
+        _signInProblem.value = null
     }
 
     fun clearSignInProblem() {
@@ -216,6 +221,7 @@ class Cloud private constructor(context: Context) {
     /** Forgets the account and what was synced; the recipes here stay as they are. */
     fun signOut() {
         pending?.cancel()
+        _signInProblem.value = null
         _account.value = null
         _state.value = State.OFF
         _last.value = 0L
