@@ -18,7 +18,10 @@ synced with your own Nextcloud, in the folder Nextcloud Cookbook uses, and go no
 app also asks Cookbook on that server which folder it uses, and after a sync asks it to look at
 the folder again; neither carries anything but the request. Sign-in is on the server's own page
 in your browser, which gives this phone an app password of its own; you can revoke it from the
-server's security settings. Before you sign in, and after you sign out, nothing goes there.
+server's security settings. Sync and sign-in go over https, unless you give an address that
+starts with http:// for a server at home or on a VPN (a private or Tailscale address, or a local
+name): then they go in plain http on that network, app password included. An http:// address out
+on the internet is refused. Before you sign in, and after you sign out, nothing goes there.
 
 It keeps, in its own private storage on the phone: your recipes, one small file each, which
 ingredients you have ticked in each (never synced), whether the letters and page dots are shown
