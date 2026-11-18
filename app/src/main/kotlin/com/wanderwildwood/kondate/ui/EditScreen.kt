@@ -40,7 +40,12 @@ import com.wanderwildwood.kondate.data.Store
 @Composable
 fun EditScreen(store: Store, id: String?, draft: Recipe?, note: Int, onDone: (String?) -> Unit) {
     val context = LocalContext.current
-    val start = remember(id) { id?.let { store.get(it) } ?: draft ?: Recipe(id = "", name = "") }
+    // The recipe as it was when the edit began, kept with the typed fields: an editor brought back
+    // after the system stopped the app compares with this, not with what a sync has put here since.
+    val startJson = rememberSaveable(id) {
+        (id?.let { store.get(it) } ?: draft ?: Recipe(id = "", name = "")).toJson().toString()
+    }
+    val start = remember(startJson) { Recipe.fromOwnJson(startJson) ?: Recipe(id = "", name = "") }
     var name by rememberSaveable { mutableStateOf(start.name) }
     var serves by rememberSaveable { mutableStateOf(start.recipeYield) }
     var prep by rememberSaveable { mutableStateOf(minutesText(start.prepTime)) }
