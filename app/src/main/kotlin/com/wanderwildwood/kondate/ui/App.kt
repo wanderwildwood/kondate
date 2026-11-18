@@ -8,6 +8,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -45,7 +46,8 @@ sealed interface Screen {
 fun RecipesApp(incoming: Incoming?, onTaken: () -> Unit) {
     val context = LocalContext.current
     val store = remember { Store.get(context) }
-    var stack by remember { mutableStateOf(listOf<Screen>(Screen.List)) }
+    // Kept through the process being stopped, so a recipe half typed in is not lost.
+    var stack by rememberSaveable(stateSaver = ScreenStack.saver) { mutableStateOf(listOf<Screen>(Screen.List)) }
     var about by remember { mutableStateOf(false) }
 
     fun go(s: Screen) { stack = stack + s }
