@@ -162,6 +162,57 @@ class Cloud private constructor(context: Context) {
         syncNow()
     }
 
+    private var browserSignIn: Job? = null
+    private val _awaitingBrowser = MutableStateFlow(false)
+    /** Whether a sign-in begun in the browser is still being waited for. */
+    val awaitingBrowser: StateFlow<Boolean> = _awaitingBrowser
+    private val _signInProblem = MutableStateFlow<Int?>(null)
+    /** What went wrong with the last browser sign-in, as a string to show; null for nothing. */
+    val signInProblem: StateFlow<Int?> = _signInProblem
+
+    /**
+     * Waits for the reader to finish signing in in the browser, then keeps the account the server
+     * hands over. It runs here rather than on the screen, so the screen going (Back, or the system
+     * making it again) while the browser is in front does not lose a sign-in finished there.
+     */
+    fun awaitBrowser(started: LoginFlow.Started) {
+        browserSignIn?.cancel()
+        _signInProblem.value = null
+        _awaitingBrowser.value = true
+        browserSignIn = scope.launch {
+            try {
+                // The server gives twenty minutes to finish signing in.
+                repeat(600) {
+                    delay(2000)
+                    val got = runCatching { LoginFlow.poll(started) }.getOrNull()
+                    if (got != null) {
+                        _awaitingBrowser.value = false
+                        _signInProblem.value = try {
+                            signIn(got)
+                            null
+                        } catch (e: kotlinx.coroutines.CancellationException) {
+                            throw e
+                        } catch (e: Exception) {
+                            if (e is Refused) R.string.cloud_refused else R.string.cloud_unreachable
+                        }
+                        return@launch
+                    }
+                }
+            } finally {
+                _awaitingBrowser.value = false
+            }
+        }
+    }
+
+    /** Stops waiting for the browser, when an app password is to be typed in instead. */
+    fun stopAwaitingBrowser() {
+        browserSignIn?.cancel()
+    }
+
+    fun clearSignInProblem() {
+        _signInProblem.value = null
+    }
+
     /** Forgets the account and what was synced; the recipes here stay as they are. */
     fun signOut() {
         pending?.cancel()

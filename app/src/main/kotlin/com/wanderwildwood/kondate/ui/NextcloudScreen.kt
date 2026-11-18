@@ -30,7 +30,6 @@ import com.wanderwildwood.kondate.sync.LoginFlow
 import com.wanderwildwood.kondate.sync.Refused
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.DateFormat
@@ -55,7 +54,10 @@ fun NextcloudScreen(cloud: Cloud, onBack: () -> Unit) {
     var user by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var typed by remember { mutableStateOf(false) }
-    var waiting by remember { mutableStateOf<Job?>(null) }
+    // Asking the server for its sign-in page; the wait for the browser after it is the Cloud's.
+    var starting by remember { mutableStateOf<Job?>(null) }
+    val awaiting by cloud.awaitingBrowser.collectAsStateWithLifecycle()
+    val browserProblem by cloud.signInProblem.collectAsStateWithLifecycle()
     var problem by remember { mutableStateOf<Int?>(null) }
     var newFolder by remember(folder) { mutableStateOf(folder) }
 
@@ -109,7 +111,7 @@ fun NextcloudScreen(cloud: Cloud, onBack: () -> Unit) {
             } else {
                 item(key = "explain") { Note(stringResource(R.string.cloud_explain)) }
                 item(key = "server") {
-                    Field(stringResource(R.string.cloud_server), server, { server = it; problem = null }, hint = stringResource(R.string.cloud_server_hint), url = true)
+                    Field(stringResource(R.string.cloud_server), server, { server = it; problem = null; cloud.clearSignInProblem() }, hint = stringResource(R.string.cloud_server_hint), url = true)
                 }
                 if (typed) {
                     item(key = "user") { Field(stringResource(R.string.cloud_user), user, { user = it; problem = null }, words = false) }
@@ -118,8 +120,8 @@ fun NextcloudScreen(cloud: Cloud, onBack: () -> Unit) {
                     }
                     item(key = "password_note") { Note(stringResource(R.string.cloud_app_password_note)) }
                 }
-                problem?.let { p -> item(key = "problem") { Note(stringResource(p)) } }
-                if (waiting != null) item(key = "waiting") { Note(stringResource(R.string.cloud_waiting)) }
+                (problem ?: browserProblem)?.let { p -> item(key = "problem") { Note(stringResource(p)) } }
+                if (starting != null || awaiting) item(key = "waiting") { Note(stringResource(R.string.cloud_waiting)) }
                 item(key = "sign_in") {
                     WideButton(stringResource(R.string.cloud_sign_in), filled = true) {
                         if (server.isBlank()) return@WideButton
@@ -132,8 +134,9 @@ fun NextcloudScreen(cloud: Cloud, onBack: () -> Unit) {
                             keep(Account(LoginFlow.normalise(server), user.trim(), password.trim()))
                             return@WideButton
                         }
-                        if (waiting != null) return@WideButton
-                        waiting = scope.launch {
+                        if (starting != null || awaiting) return@WideButton
+                        cloud.clearSignInProblem()
+                        starting = scope.launch {
                             try {
                                 val started = runCatching { withContext(Dispatchers.IO) { LoginFlow.start(server) } }.getOrNull()
                                 if (started == null) {
@@ -149,23 +152,19 @@ fun NextcloudScreen(cloud: Cloud, onBack: () -> Unit) {
                                     typed = true
                                     return@launch
                                 }
-                                // The server gives twenty minutes to finish signing in.
-                                repeat(600) {
-                                    delay(2000)
-                                    val got = runCatching { withContext(Dispatchers.IO) { LoginFlow.poll(started) } }.getOrNull()
-                                    if (got != null) {
-                                        keep(got)
-                                        return@launch
-                                    }
-                                }
+                                cloud.awaitBrowser(started)
                             } finally {
-                                waiting = null
+                                starting = null
                             }
                         }
                     }
                 }
                 if (!typed) {
-                    item(key = "type") { WideButton(stringResource(R.string.cloud_type_password)) { typed = true; waiting?.cancel() } }
+                    item(key = "type") { WideButton(stringResource(R.string.cloud_type_password)) {
+                        typed = true
+                        starting?.cancel()
+                        cloud.stopAwaitingBrowser()
+                    } }
                 }
             }
         }
