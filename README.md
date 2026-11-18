@@ -44,6 +44,7 @@ on any device with Android 11 or later, Supernote's tablets among them.
   and only then. Where a step names a time ("simmer for 25–30 minutes"), a button starts a timer
   for it in the clock app — [Clock](https://github.com/wanderwildwood/tokei) answers it, as does
   Android's own — and cooking carries on here.
+- **Dark mode**, a switch in Settings; the app also follows the phone's own dark setting.
 - **Search** over names and ingredients: "lemon" finds every recipe with a lemon in it.
 - **In and out of a file.** Settings saves every recipe to one file, and brings recipes in from
   one. A single recipe can be saved as a file or sent as text from its ⋮.
