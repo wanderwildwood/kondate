@@ -114,8 +114,9 @@ is read on the phone and goes nowhere.
 
 The other is Nextcloud, and only when you have signed in to one: then your recipes go to your own
 Nextcloud, and to nowhere else. That is over https, unless you give an http:// address of a server
-at home or on a VPN; then it is plain http on that network, app password included. Nothing goes there before you sign in, and after you sign out
-nothing more does; the recipes already there stay until you delete them there.
+at home or on a VPN; then it is plain http on that network, app password included. Nothing goes
+there before you sign in, and after you sign out nothing more does; the recipes already there stay
+until you delete them there.
 
 Everything else stays on the phone, in the app's own storage: the recipes, which ingredients are
 ticked, and, when you are signed in, the Nextcloud address, login name and the app password it
