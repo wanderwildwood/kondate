@@ -41,7 +41,8 @@ class Store private constructor(private val context: Context) {
     private fun load(): List<Recipe> =
         sorted(
             dir.listFiles { f -> f.isFile && f.name.endsWith(".json") }.orEmpty().mapNotNull { f ->
-                runCatching { JsonLd.recipesInJson(f.readText()).firstOrNull() }.getOrNull()
+                // The app's own files are read word for word; anything else through the page reader.
+                runCatching { f.readText().let { Recipe.fromOwnJson(it) ?: JsonLd.recipesInJson(it).firstOrNull() } }.getOrNull()
                     ?.let { if (it.id.isEmpty()) it.copy(id = f.name.removeSuffix(".json")) else it }
             },
         )

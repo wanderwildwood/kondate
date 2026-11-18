@@ -94,6 +94,56 @@ data class Recipe(
     private fun JSONObject.putIf(key: String, value: String) {
         if (value.isNotEmpty()) put(key, value)
     }
+
+    companion object {
+        /**
+         * A recipe as this app wrote it with [toJson], read back word for word: no markup is
+         * stripped and no step number taken off, as the web page reader would do. Null when the
+         * text is not one of the app's own recipes, for the page reader to try instead.
+         */
+        fun fromOwnJson(text: String): Recipe? = runCatching {
+            val o = JSONObject(text)
+            if (o.optString("@type") != "Recipe" || !o.has("identifier") || !o.has("name")) return null
+            val ingredients = o.optJSONArray("recipeIngredient")
+            val steps = ArrayList<Step>()
+            val instructions = o.optJSONArray("recipeInstructions")
+            for (i in 0 until (instructions?.length() ?: 0)) {
+                val e = instructions!!.optJSONObject(i) ?: return null
+                when (e.optString("@type")) {
+                    "HowToStep" -> steps += Step(e.optString("text"))
+                    "HowToSection" -> {
+                        val section = e.optString("name")
+                        val items = e.optJSONArray("itemListElement") ?: return null
+                        for (k in 0 until items.length()) {
+                            val step = items.optJSONObject(k) ?: return null
+                            steps += Step(step.optString("text"), section)
+                        }
+                    }
+                    else -> return null
+                }
+            }
+            Recipe(
+                id = o.optString("identifier"),
+                name = o.optString("name"),
+                description = o.optString("description"),
+                recipeYield = o.optString("recipeYield"),
+                prepTime = o.optString("prepTime"),
+                cookTime = o.optString("cookTime"),
+                totalTime = o.optString("totalTime"),
+                ingredients = (0 until (ingredients?.length() ?: 0)).map { ingredients!!.getString(it) },
+                steps = steps,
+                notes = o.optString("notes"),
+                url = o.optString("url"),
+                image = o.optString("image"),
+                author = o.optJSONObject("author")?.optString("name").orEmpty(),
+                category = o.optString("recipeCategory"),
+                cuisine = o.optString("recipeCuisine"),
+                keywords = o.optString("keywords"),
+                created = o.optString("dateCreated"),
+                modified = o.optString("dateModified"),
+            )
+        }.getOrNull()
+    }
 }
 
 private val FIRST_NUMBER = Regex("""\d+""")
