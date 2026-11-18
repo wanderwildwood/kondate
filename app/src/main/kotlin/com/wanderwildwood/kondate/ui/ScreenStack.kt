@@ -16,6 +16,26 @@ object ScreenStack {
         restore = { lines -> lines.mapNotNull { read(it) }.ifEmpty { listOf(Screen.List) } },
     )
 
+    /**
+     * What a place's own saved state is kept under: its place in the stack and what it is. A
+     * draft is left out, so the key is the same before and after the stack is brought back.
+     */
+    fun key(at: Int, s: Screen): String = "$at ${write(if (s is Screen.Edit) s.copy(draft = null) else s)}"
+
+    /** A place where something is being typed in, kept while another is opened over it. */
+    fun typing(s: Screen): Boolean = s is Screen.Edit || s == Screen.Paste
+
+    /**
+     * The stack once [next], handed in by another app, is opened. It opens over the list, unless
+     * something is being typed in (a recipe, or text to sort): then it opens over that, and Back
+     * comes back to it as it was.
+     */
+    fun opening(stack: List<Screen>, next: Screen): List<Screen> = when {
+        stack.last() == next -> stack
+        stack.any { typing(it) } -> stack + next
+        else -> listOf(Screen.List, next)
+    }
+
     fun write(s: Screen): String {
         val o = JSONObject()
         when (s) {

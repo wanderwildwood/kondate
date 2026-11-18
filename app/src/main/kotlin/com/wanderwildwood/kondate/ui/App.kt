@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -49,31 +50,32 @@ fun RecipesApp(incoming: Incoming?, onTaken: () -> Unit) {
     // Kept through the process being stopped, so a recipe half typed in is not lost.
     var stack by rememberSaveable(stateSaver = ScreenStack.saver) { mutableStateOf(listOf<Screen>(Screen.List)) }
     var about by remember { mutableStateOf(false) }
+    // What each place holds, kept apart for each place in the stack, so an editor opened over
+    // another starts empty. Text being typed in is kept under what opens over it, for Back to
+    // find as it was; any other place starts afresh each time it is come back to, as it always has.
+    val held = rememberSaveableStateHolder()
 
-    fun go(s: Screen) { stack = stack + s }
-    fun back() { if (stack.size > 1) stack = stack.dropLast(1) }
-    fun replace(s: Screen) { stack = stack.dropLast(1) + s }
+    fun move(next: List<Screen>) {
+        val stays = next.mapIndexedNotNull { at, s -> ScreenStack.key(at, s).takeIf { at == next.lastIndex || ScreenStack.typing(s) } }.toSet()
+        stack.forEachIndexed { at, s -> ScreenStack.key(at, s).let { if (it !in stays) held.removeState(it) } }
+        stack = next
+    }
+    fun go(s: Screen) { move(stack + s) }
+    fun back() { if (stack.size > 1) move(stack.dropLast(1)) }
+    fun replace(s: Screen) { move(stack.dropLast(1) + s) }
 
     LaunchedEffect(incoming) {
         val i = incoming ?: return@LaunchedEffect
-        // Taken only once handled: clearing it first changes this effect's key, which would
-        // cancel a file still being read in.
-        when (i) {
-            is Incoming.Link -> {
-                val known = store.byUrl(i.url)
-                stack = listOf(Screen.List) + if (known != null) {
-                    FootNotice.say(context, context.getString(R.string.already_saved))
-                    Screen.Recipe(known.id)
-                } else {
-                    Screen.Reading(i.url)
-                }
-            }
+        val next = when (i) {
+            is Incoming.Link -> store.byUrl(i.url)?.let { known ->
+                FootNotice.say(context, context.getString(R.string.already_saved))
+                Screen.Recipe(known.id)
+            } ?: Screen.Reading(i.url)
             // Shared words (not just a link): sorted into a draft, on the phone.
-            is Incoming.Text -> stack = listOf(
-                Screen.List,
-                Screen.Edit(null, draftFromText(i.subject, i.text), R.string.paste_draft_note),
-            )
+            is Incoming.Text -> Screen.Edit(null, draftFromText(i.subject, i.text), R.string.paste_draft_note)
         }
+        move(ScreenStack.opening(stack, next))
+        // Taken last, so the same share is not handled again; taking it ends this effect.
         onTaken()
     }
 
@@ -81,7 +83,8 @@ fun RecipesApp(incoming: Incoming?, onTaken: () -> Unit) {
     val cloud = remember { Cloud.get(context) }
     val account by cloud.account.collectAsStateWithLifecycle()
 
-    when (val s = stack.last()) {
+    val top = stack.last()
+    held.SaveableStateProvider(ScreenStack.key(stack.size - 1, top)) { when (val s = top) {
         Screen.List -> ListScreen(
             store = store,
             onOpen = { go(Screen.Recipe(it)) },
@@ -131,11 +134,11 @@ fun RecipesApp(incoming: Incoming?, onTaken: () -> Unit) {
             store = store,
             onBack = ::back,
             onAbout = { about = true },
-            onOpen = { stack = listOf(Screen.List, Screen.Recipe(it)) },
+            onOpen = { move(listOf(Screen.List, Screen.Recipe(it))) },
             onNextcloud = { go(Screen.Nextcloud) },
         )
         Screen.Nextcloud -> NextcloudScreen(cloud = Cloud.get(context), onBack = ::back)
-    }
+    } }
     if (about) AboutDialog(onDismiss = { about = false })
 }
 
