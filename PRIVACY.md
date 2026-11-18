@@ -6,7 +6,7 @@ It goes online for two things. One is to fetch a recipe page whose address you s
 typed into it. That one page is fetched, saying plainly that the request is from the app Recipes; no pictures or
 scripts from it are fetched, and nothing about you or your recipes is sent with the request. The
 site sees a request for its page from an app, and may refuse it; the app then offers pasted
-text instead and does not try to get round the refusal. A recipe page is asked for over https
+text instead and does not try to get around the refusal. A recipe page is asked for over https
 only: an address that starts with http is tried as https, and if the site does not answer that
 way the app says so and nothing is sent in plain text.
 

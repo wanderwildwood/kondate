@@ -17,11 +17,11 @@ on any device with Android 11 or later, Supernote's tablets among them.
 - **Saves a recipe from its page.** Share a recipe page to Recipes from the browser (or press +
   and paste its address) and it reads the recipe the page publishes for search engines — the
   name, how many it serves, the times, the ingredients, the method in its parts — and keeps the
-  words. Not the pictures, not the life story above the recipe, not the adverts. Most recipe
+  words. Not the pictures, not the life story above the recipe, not the ads. Most recipe
   sites publish this; a page that does not opens the form with its name and address filled in,
   for the rest to be typed.
 - **Paste recipe text.** Some sites refuse anything that is not a browser (the app says so and
-  does not try to get round it). Open the recipe in your browser, copy its text, and choose
+  does not try to get around it). Open the recipe in your browser, copy its text, and choose
   Paste recipe text under +, or select the text and Share → Recipes. The first line becomes the
   name; lines under Ingredients, and under Instructions, Directions, Method, Steps or
   Preparation, are sorted into the form, Serves/Yield and Prep/Cook/Total fill their boxes, and
@@ -119,7 +119,7 @@ nothing more does; the recipes already there stay until you delete them there.
 
 Everything else stays on the phone, in the app's own storage: the recipes, which ingredients are
 ticked, and, when you are signed in, the Nextcloud address, login name and the app password it
-gave this phone. There are no accounts of the app's own, no analytics and no adverts. The app does not back itself up;
+gave this phone. There are no accounts of the app's own, no analytics and no ads. The app does not back itself up;
 uninstalling it removes everything, so save your recipes to a file first if you want them.
 
 A timer goes to the clock app and a shopping list to Memo only when you press for one. The
