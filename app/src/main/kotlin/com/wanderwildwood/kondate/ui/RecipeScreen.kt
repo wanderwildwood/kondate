@@ -68,7 +68,9 @@ fun RecipeScreen(store: Store, id: String, onBack: () -> Unit, onEdit: () -> Uni
         return
     }
     val base = recipe.servings
-    var servings by rememberSaveable(id) { mutableStateOf(base ?: 0) }
+    // Keyed on the yield too: one a sync brings while the page is open starts the count afresh,
+    // rather than leaving a count of 0 that would scale every amount to nothing.
+    var servings by rememberSaveable(id, base) { mutableStateOf(base ?: 0) }
     var factorAt by rememberSaveable(id) { mutableStateOf(FACTORS.indexOf(1.0)) }
     val factor = if (base != null && base > 0) servings.toDouble() / base else FACTORS[factorAt]
     // Read again when a sync brings other ingredients (the store forgets the ticks then too).
