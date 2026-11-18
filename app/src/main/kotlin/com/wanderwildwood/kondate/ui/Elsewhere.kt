@@ -15,7 +15,7 @@ import com.wanderwildwood.kondate.R
 object Elsewhere {
 
     /** Notes — oboegaki — which takes shared text with a subject as a new note of that title. */
-    private const val NOTES_APP = "com.wanderwildwood.oboegaki"
+    private const val NOTES_APP = HouseApps.MEMO
 
     private fun notes(title: String, text: String): Intent = Intent(Intent.ACTION_SEND)
         .setType("text/plain")
@@ -23,9 +23,11 @@ object Elsewhere {
         .putExtra(Intent.EXTRA_SUBJECT, title)
         .putExtra(Intent.EXTRA_TEXT, text)
 
-    /** Whether Notes is on the phone to take a shopping list. */
-    fun hasNotes(context: Context): Boolean =
-        context.packageManager.queryIntentActivities(notes("", ""), 0).isNotEmpty()
+    /**
+     * Whether Notes is on the phone to take a shopping list: the real one, signed with its
+     * release certificate ([HouseApps]); an app that only took its name is passed over.
+     */
+    fun hasNotes(context: Context): Boolean = HouseApps.aimed(context, notes("", ""), NOTES_APP) != null
 
     /**
      * A shopping list to Notes as a checklist note, or, with no Notes on the phone, the same
