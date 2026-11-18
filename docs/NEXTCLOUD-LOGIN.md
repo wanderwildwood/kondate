@@ -9,7 +9,11 @@ with the keystore and used for every DAV call with HTTP Basic.
 "Type an app password instead" shows two more fields. The person enters the server address, their
 login name and an app password they made in Nextcloud (Personal settings, Security, Devices and
 sessions). Pressing Sign in builds the account from exactly what was typed (the address gets
-`https://` added if missing; `http://` is refused) and calls `Cloud.signIn`, which probes the
+`https://` added if it names no scheme; an `http://` address is kept only for a home or VPN
+host, a private or Tailscale address, `localhost`, a name with no dots or one ending `.local`,
+`.lan`, `.home.arpa`, `.internal` or `.ts.net`, as `LoginFlow.plainHttpAllowed` in
+`sync/Nextcloud.kt` decides, and refused for any other host; the same check covers the browser
+route's `server` reply and every DAV call) and calls `Cloud.signIn`, which probes the
 Cookbook folder on the server with those credentials. Nothing depends on a browser, on the
 server's login page, or on what the server believes its own address to be. A wrong value shows
 "refused" or "unreachable" straight away, on the same screen.
