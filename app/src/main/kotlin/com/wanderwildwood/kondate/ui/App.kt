@@ -21,11 +21,10 @@ import com.wanderwildwood.kondate.sync.Cloud
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-/** What another app handed this one: a page to read, some text, or a file of recipes. */
+/** What another app handed this one: a page to read, or some text. */
 sealed interface Incoming {
     data class Link(val url: String) : Incoming
     data class Text(val subject: String, val text: String) : Incoming
-    data class File(val uri: Uri) : Incoming
 }
 
 /** The places in the app. Each opens over the one it was reached from, and Back closes it. */
@@ -72,10 +71,6 @@ fun RecipesApp(incoming: Incoming?, onTaken: () -> Unit) {
                 Screen.List,
                 Screen.Edit(null, draftFromText(i.subject, i.text), R.string.paste_draft_note),
             )
-            is Incoming.File -> {
-                val opened = bringIn(context, store, i.uri)
-                stack = listOf(Screen.List) + listOfNotNull(opened?.let { Screen.Recipe(it) })
-            }
         }
         onTaken()
     }
@@ -142,7 +137,7 @@ fun RecipesApp(incoming: Incoming?, onTaken: () -> Unit) {
 }
 
 /**
- * Recipes from a file another app opened here, or the reader picked: brought in, said so, and
+ * Recipes from a file the reader picked in Settings: brought in, said so, and
  * the id of the one recipe when there was only one, to open it.
  */
 suspend fun bringIn(context: Context, store: Store, uri: Uri): String? {

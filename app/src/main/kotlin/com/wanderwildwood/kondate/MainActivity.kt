@@ -2,14 +2,12 @@ package com.wanderwildwood.kondate
 
 import com.wanderwildwood.kondate.ui.DarkSelection
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalCursorBlinkEnabled
 import androidx.compose.runtime.mutableStateOf
-import androidx.core.content.IntentCompat
 import com.mudita.mmd.ThemeMMD
 import com.wanderwildwood.kondate.importer.Reader
 import com.wanderwildwood.kondate.sync.Cloud
@@ -62,21 +60,21 @@ class MainActivity : ComponentActivity() {
     }
 
     /**
-     * A page shared from the browser (its address, perhaps with its title), words shared from
-     * anywhere else, or a text file shared from another app.
+     * A page shared from the browser (its address, perhaps with its title), or words shared from
+     * anywhere else. A file handed in by another app is not taken: recipes come in from a file
+     * only through Settings, where the reader picks it.
      */
     private fun incomingFrom(intent: Intent?): Incoming? {
         intent ?: return null
         return when (intent.action) {
             Intent.ACTION_SEND -> {
-                IntentCompat.getParcelableExtra(intent, Intent.EXTRA_STREAM, Uri::class.java)?.let { return Incoming.File(it) }
                 val text = intent.getStringExtra(Intent.EXTRA_TEXT) ?: return null
                 Reader.addressIn(text)?.takeIf { Reader.isLinkShare(text) }?.let { Incoming.Link(it) }
                     ?: Incoming.Text(intent.getStringExtra(Intent.EXTRA_SUBJECT).orEmpty(), text)
             }
-            Intent.ACTION_VIEW -> intent.data?.let { uri ->
-                if (uri.scheme == "http" || uri.scheme == "https") Incoming.Link(uri.toString()) else Incoming.File(uri)
-            }
+            Intent.ACTION_VIEW -> intent.data
+                ?.takeIf { it.scheme == "http" || it.scheme == "https" }
+                ?.let { Incoming.Link(it.toString()) }
             else -> null
         }
     }
