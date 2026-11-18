@@ -151,6 +151,7 @@
     <string name="import_file">Bring in recipes from a file</string>
     <string name="import_file_note">One saved from here, or any file of schema.org recipes. A recipe already here is replaced by its copy.</string>
     <string name="import_none">No recipes in that file.</string>
+    <string name="import_stopped">%1$d of %2$d recipes brought in: the phone\'s storage would not take the rest.</string>
     <plurals name="imported">
         <item quantity="one">%1$d recipe brought in.</item>
         <item quantity="other">%1$d recipes brought in.</item>

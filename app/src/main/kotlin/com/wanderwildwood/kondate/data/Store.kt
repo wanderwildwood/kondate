@@ -130,13 +130,16 @@ class Store private constructor(private val context: Context) {
      * Recipes brought in from a file. One with the id of a recipe already here replaces it,
      * which is what bringing back an export should do; one with no id, or an id not seen
      * before, is added. Each comes with the ticks the file carries for it, if any (see
-     * [Ticks.afterBringIn]). Returns how many came in.
+     * [Ticks.afterBringIn]). Returns how many came in: fewer than were given when the phone's
+     * storage would not take one, and then the rest are not tried. Those written before it are
+     * in the list, and synced, all the same.
      */
     @Synchronized
     fun bringIn(recipes: List<Pair<Recipe, Set<Int>?>>): Int {
         if (recipes.isEmpty()) return 0
         val now = now()
         val byId = _all.value.associateBy { it.id }.toMutableMap()
+        var count = 0
         for ((r, fromFile) in recipes) {
             val kept = r.copy(
                 id = r.id.takeIf { it.isNotEmpty() && safe(it) == it } ?: newId(),
@@ -145,13 +148,19 @@ class Store private constructor(private val context: Context) {
             )
             val here = byId[kept.id]
             val ticks = Ticks.afterBringIn(here, if (here == null) emptySet() else ticked(kept.id), kept, fromFile)
-            write(kept)
+            try {
+                write(kept)
+            } catch (_: java.io.IOException) {
+                break
+            }
             setTicked(kept.id, ticks)
             byId[kept.id] = kept
+            count++
         }
+        if (count == 0) return 0
         _all.value = sorted(byId.values.toList())
         onChanged?.invoke()
-        return recipes.size
+        return count
     }
 
     /** Every recipe as one document, for a file, with the ingredients ticked in each. */

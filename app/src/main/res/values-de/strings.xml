@@ -141,6 +141,7 @@
     <string name="import_file">Rezepte aus einer Datei übernehmen</string>
     <string name="import_file_note">Eine von hier gespeicherte oder jede Datei mit schema.org-Rezepten. Ein Rezept, das schon hier ist, wird durch seine Kopie ersetzt.</string>
     <string name="import_none">In dieser Datei sind keine Rezepte.</string>
+    <string name="import_stopped">%1$d von %2$d Rezepten übernommen: Der Speicher des Telefons nimmt den Rest nicht auf.</string>
     <plurals name="imported">
         <item quantity="one">%1$d Rezept übernommen.</item>
         <item quantity="other">%1$d Rezepte übernommen.</item>

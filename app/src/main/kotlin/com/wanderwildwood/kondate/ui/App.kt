@@ -155,6 +155,11 @@ suspend fun bringIn(context: Context, store: Store, uri: Uri): String? {
     }
     val before = store.all.value.map { it.id }.toSet()
     val count = withContext(Dispatchers.IO) { store.bringIn(recipes) }
+    if (count < recipes.size) {
+        // The phone's storage would not take them all: said, with how many did come in.
+        FootNotice.say(context, context.getString(R.string.import_stopped, count, recipes.size))
+        return null
+    }
     FootNotice.say(context, context.resources.getQuantityString(R.plurals.imported, count, count))
     if (recipes.size != 1) return null
     return recipes[0].first.id.takeIf { it.isNotEmpty() && store.get(it) != null }
@@ -176,7 +181,16 @@ private fun ReadingScreen(
     LaunchedEffect(url, attempt) {
         failed = null
         when (val r = withContext(Dispatchers.IO) { Reader.read(url) }) {
-            is Reader.Result.Found -> onSaved(withContext(Dispatchers.IO) { store.save(r.recipe.copy(id = "")) }.id)
+            is Reader.Result.Found -> {
+                val kept = try {
+                    withContext(Dispatchers.IO) { store.save(r.recipe.copy(id = "")) }
+                } catch (_: java.io.IOException) {
+                    null
+                }
+                // The phone's storage would not take it: it opens in the editor, saved there or not
+                // as the reader chooses, so what was read is not lost.
+                if (kept != null) onSaved(kept.id) else onTypeIn(r.recipe.copy(id = ""), R.string.recipe_not_saved)
+            }
             is Reader.Result.NoRecipe -> onTypeIn(Recipe(id = "", name = r.title, url = url), R.string.no_recipe_on_page)
             is Reader.Result.Failed -> failed = r.code
         }

@@ -107,7 +107,7 @@ class Cloud private constructor(context: Context) {
         lastTry = System.currentTimeMillis()
         _state.value = State.SYNCING
         val sync = Sync(NextcloudFolder(a, folder), StoreSide(store), loadLinks(), phoneSuffix)
-        val outcome = try {
+        var outcome = try {
             sync.run()
             State.IDLE
         } catch (_: Refused) {
@@ -123,7 +123,13 @@ class Cloud private constructor(context: Context) {
         }
         // Signed out, or moved to another folder, while it ran: what it found is not kept.
         if (_account.value != a || _folder.value != folder) return@withLock
-        saveLinks(sync.links.values)
+        // The phone's storage would not take the links: a failed sync, not a crash; the next
+        // one finds the same recipes by name and stamp.
+        try {
+            saveLinks(sync.links.values)
+        } catch (_: IOException) {
+            outcome = State.FAILED
+        }
         if (outcome == State.IDLE) {
             _last.value = System.currentTimeMillis()
             prefs.edit().putLong(LAST, _last.value).apply()
@@ -194,7 +200,7 @@ class Cloud private constructor(context: Context) {
         tmp.writeText(Link.listToJson(links))
         if (!tmp.renameTo(linksFile)) {
             linksFile.delete()
-            tmp.renameTo(linksFile)
+            if (!tmp.renameTo(linksFile)) throw IOException("could not keep ${linksFile.name}")
         }
     }
 
