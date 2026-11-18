@@ -32,7 +32,9 @@
         </intent>
     </queries>
 
-    <!-- No plain http: everything this app asks for goes over https (xml/network_security_config). -->
+    <!-- https for everything except a Nextcloud at home or on a VPN (a private or Tailscale address
+         or a local name); the config allows plain http and sync/Nextcloud.kt enforces that rule
+         (xml/network_security_config). -->
     <application
         android:allowBackup="false"
         android:dataExtractionRules="@xml/no_backup"
