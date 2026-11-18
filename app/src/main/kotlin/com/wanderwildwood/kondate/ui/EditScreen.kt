@@ -66,9 +66,14 @@ fun EditScreen(store: Store, id: String?, draft: Recipe?, note: Int, onDone: (St
             return
         }
         val lines = ingredients.lines().map { it.trim() }.filter { it.isNotEmpty() }
+        // A sync brought in another version while this one was being edited: both are kept, as
+        // a sync conflict keeps them, the sync's under the recipe's own id and this one as a
+        // new recipe marked as the phone's.
+        val overtaken = id != null && store.get(id)?.let { it.modified != start.modified } == true
+        val base = if (overtaken) start.copy(id = "", created = "") else start
         val kept = try { store.save(
-            start.copy(
-                name = name.trim(),
+            base.copy(
+                name = if (overtaken) name.trim() + context.getString(R.string.phone_copy_suffix) else name.trim(),
                 recipeYield = serves.trim(),
                 prepTime = timeFrom(prep, start.prepTime),
                 cookTime = timeFrom(cook, start.cookTime),
@@ -86,7 +91,8 @@ fun EditScreen(store: Store, id: String?, draft: Recipe?, note: Int, onDone: (St
             return
         }
         // The ticks count places in the list; a changed list makes them point at other lines.
-        if (lines != start.ingredients) store.setTicked(kept.id, emptySet())
+        if (!overtaken && lines != start.ingredients) store.setTicked(kept.id, emptySet())
+        if (overtaken) FootNotice.say(context, context.getString(R.string.recipe_saved_as_copy))
         onDone(kept.id)
     }
 

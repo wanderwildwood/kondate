@@ -111,7 +111,8 @@ fun RecipesApp(incoming: Incoming?, onTaken: () -> Unit) {
             id = s.id,
             draft = s.draft,
             note = s.note,
-            onDone = { saved -> if (saved != null && s.id == null) replace(Screen.Recipe(saved)) else back() },
+            // A new recipe, or an edit kept as a copy beside a sync's version, opens on its own page.
+            onDone = { saved -> if (saved != null && saved != s.id) replace(Screen.Recipe(saved)) else back() },
         )
         is Screen.Cook -> CookScreen(store = store, id = s.id, onBack = ::back)
         is Screen.Reading -> ReadingScreen(

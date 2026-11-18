@@ -59,6 +59,7 @@
     <string name="already_saved">That recipe is already saved.</string>
     <!-- Said when the phone's storage would not take a recipe being saved; the editor stays open. -->
     <string name="recipe_not_saved">The recipe could not be saved.</string>
+    <string name="recipe_saved_as_copy">A sync changed this recipe while you were editing it. Both are kept: yours is the one marked (phone).</string>
 
     <!-- ============================================================ -->
     <!-- A recipe -->
