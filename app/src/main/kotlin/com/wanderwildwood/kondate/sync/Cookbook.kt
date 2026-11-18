@@ -81,12 +81,22 @@ object Cookbook {
     /**
      * A recipe.json as a recipe, or null when it is not one. [id] is empty unless the file names
      * this app's id for it; the caller gives it one.
+     *
+     * A file that names this app's id is one this app wrote, and its words are read as they
+     * stand: blank lines in the notes, a "<" in a step and a step that begins "1." all come back
+     * as they were typed. Only a file without one goes through the web page reader's cleaning.
+     * The method has no mark for the end of a part, so steps that followed a part without one
+     * of their own come back as the last steps of that part.
      */
-    fun fromJson(text: String): Recipe? {
+    fun fromJson(text: String): Recipe? = read(text, asWritten = true)
+
+    private fun read(text: String, asWritten: Boolean): Recipe? {
         val o = runCatching { JSONObject(text) }.getOrNull() ?: return null
-        val read = JsonLd.fromObject(o) ?: return null
+        val cleaned = JsonLd.fromObject(o) ?: return null
+        val id = (o.opt("identifier") as? String).orEmpty().trim()
+        val read = if (asWritten && id.isNotEmpty()) ownWords(o, cleaned) else cleaned
         return read.copy(
-            id = (o.opt("identifier") as? String).orEmpty().trim(),
+            id = id,
             recipeYield = yieldOf(o),
             prepTime = timeOf(o, "prepTime", read.prepTime),
             cookTime = timeOf(o, "cookTime", read.cookTime),
@@ -94,6 +104,32 @@ object Cookbook {
             steps = parts(read.steps),
             keywords = read.keywords.split(',').map { it.trim() }.filter { it.isNotEmpty() }.joinToString(", "),
         )
+    }
+
+    /**
+     * The words of a file this app wrote, as they stand in it, wherever they are plain strings
+     * as Cookbook keeps them; anything else is left as the page reader made it.
+     */
+    private fun ownWords(o: JSONObject, cleaned: Recipe): Recipe = cleaned.copy(
+        name = (o.opt("name") as? String)?.takeIf { it.isNotBlank() } ?: cleaned.name,
+        description = o.opt("description") as? String ?: cleaned.description,
+        ingredients = strings(o.opt("recipeIngredient")) ?: cleaned.ingredients,
+        steps = strings(o.opt("recipeInstructions"))?.map { Step(it) } ?: cleaned.steps,
+        notes = o.opt("notes") as? String ?: cleaned.notes,
+        author = (o.opt("author") as? JSONObject)?.opt("name") as? String ?: cleaned.author,
+        category = o.opt("recipeCategory") as? String ?: cleaned.category,
+        cuisine = o.opt("recipeCuisine") as? String ?: cleaned.cuisine,
+    )
+
+    /** A list that is all strings, the blank ones left out; null when it is not one. */
+    private fun strings(v: Any?): List<String>? {
+        if (v !is JSONArray) return null
+        val out = ArrayList<String>(v.length())
+        for (i in 0 until v.length()) {
+            val e = v.opt(i) as? String ?: return null
+            if (e.isNotBlank()) out += e
+        }
+        return out
     }
 
     /**
@@ -155,10 +191,13 @@ object Cookbook {
 
     /**
      * Whether two recipes say the same thing, as Cookbook would keep them: the same once both
-     * have been through its shape, whatever their ids and dates.
+     * have been through its shape, whatever their ids and dates. Both are compared as the page
+     * reader cleans them, as before recipes were read word for word, so that a recipe kept here
+     * from an earlier, cleaned read still matches the same recipe read word for word now, and a
+     * sync after the update makes no copies of it.
      */
     fun same(a: Recipe, b: Recipe): Boolean {
-        fun canon(r: Recipe) = fromJson(toJson(r.copy(id = "", created = "", modified = "")).toString())
+        fun canon(r: Recipe) = read(toJson(r.copy(id = "", created = "", modified = "")).toString(), asWritten = false)
             ?.copy(id = "", created = "", modified = "")
         return canon(a) == canon(b)
     }

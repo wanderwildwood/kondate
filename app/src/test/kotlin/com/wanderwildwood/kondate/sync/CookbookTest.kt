@@ -146,6 +146,34 @@ class CookbookTest {
     }
 
     @Test
+    fun ownRecipesComeBackWordForWord() {
+        val r = Recipe(
+            id = "own1",
+            name = "Rye Bread",
+            ingredients = listOf("500 g rye <coarse>", "10 g salt"),
+            steps = listOf(Step("1. Mix the dough.", "For the dough"), Step("Bake when a < b > c.")),
+            notes = "Feed the starter first.\n\nKeeps a week.",
+        )
+        val json = Cookbook.toJson(r)
+        val back = Cookbook.fromJson(json.toString())!!
+        assertEquals("own1", back.id)
+        assertEquals(r.ingredients, back.ingredients)
+        assertEquals(r.notes, back.notes)
+        // No end-of-part mark: the loose step after a part comes back in it.
+        assertEquals(listOf(Step("1. Mix the dough.", "For the dough"), Step("Bake when a < b > c.", "For the dough")), back.steps)
+
+        // A file without this app's id still goes through the page reader's cleaning.
+        val cleaned = Cookbook.fromJson(JSONObject(json.toString()).apply { remove("identifier") }.toString())!!
+        assertEquals("Feed the starter first.\nKeeps a week.", cleaned.notes)
+        assertEquals("Mix the dough.", cleaned.steps.first().text)
+
+        // A recipe kept from a cleaned read before the update still matches the word-for-word
+        // read, so the first sync after it neither sends it again nor makes a copy.
+        assertTrue(Cookbook.same(cleaned.copy(id = "own1"), back))
+        assertTrue(Cookbook.same(r, back))
+    }
+
+    @Test
     fun notAJsonRecipe() {
         assertNull(Cookbook.fromJson("<html></html>"))
         assertNull(Cookbook.fromJson("{}"))
