@@ -157,6 +157,11 @@
     <string name="cloud_server">Serveradresse</string>
     <string name="cloud_server_hint" translatable="false">cloud.example.org</string>
     <string name="cloud_sign_in">Anmelden</string>
+    <string name="home_account_use">Das Nextcloud-Konto des Telefons verwenden</string>
+    <string name="home_account_in_use">%1$s auf %2$s, aus Home.</string>
+    <string name="home_account_stop">Nicht mehr verwenden</string>
+    <string name="home_account_signed_out">Home ist von Nextcloud abgemeldet, also auch diese App. Deine %1$s bleiben auf dem Telefon.</string>
+    <string name="home_account_what">Rezepte</string>
     <string name="cloud_type_password">Stattdessen ein App-Passwort eingeben</string>
     <string name="cloud_user">Anmeldename</string>
     <string name="cloud_app_password">App-Passwort</string>

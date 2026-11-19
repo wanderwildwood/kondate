@@ -11,6 +11,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +29,7 @@ import com.mudita.mmd.components.top_app_bar.TopAppBarMMD
 import com.wanderwildwood.kondate.R
 import com.wanderwildwood.kondate.sync.Account
 import com.wanderwildwood.kondate.sync.Cloud
+import com.wanderwildwood.kondate.sync.HomeAccount
 import com.wanderwildwood.kondate.sync.LoginFlow
 import com.wanderwildwood.kondate.sync.Refused
 import kotlinx.coroutines.Dispatchers
@@ -38,7 +42,8 @@ import java.util.Date
 /**
  * Nextcloud: signing in, and once in, the folder, a sync on demand and signing out. Signing in
  * goes through the server's own page in the browser, as Nextcloud's apps do; a phone without a
- * browser (a Kompakt may have none) takes an app password typed in instead.
+ * browser (a Kompakt may have none) takes an app password typed in instead. Where Home holds
+ * the phone's Nextcloud account, one row uses that one instead (sync/HomeAccount.kt).
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,6 +65,37 @@ fun NextcloudScreen(cloud: Cloud, onBack: () -> Unit) {
     val browserProblem by cloud.signInProblem.collectAsStateWithLifecycle()
     var problem by remember { mutableStateOf<Int?>(null) }
     var newFolder by remember(folder) { mutableStateOf(folder) }
+    val homeWho by cloud.homeWho.collectAsStateWithLifecycle()
+    // Whether Home has an account for this app: asked off the main thread when the screen opens,
+    // and again on each change notice from Home.
+    var homeAvailable by remember { mutableStateOf(false) }
+    var homeChanged by remember { mutableIntStateOf(0) }
+    DisposableEffect(Unit) {
+        val stop = HomeAccount.observe(context) { homeChanged++ }
+        onDispose { stop() }
+    }
+    LaunchedEffect(homeChanged, account, homeWho) {
+        homeAvailable = withContext(Dispatchers.IO) { HomeAccount.available(context) }
+    }
+
+    fun useHome() {
+        starting?.cancel()
+        cloud.stopAwaitingBrowser()
+        scope.launch {
+            val held = withContext(Dispatchers.IO) { HomeAccount.read(context) }
+            if (held == null) {
+                homeAvailable = false
+                return@launch
+            }
+            if (!LoginFlow.plainHttpAllowed(held.server)) {
+                problem = R.string.cloud_needs_https
+                return@launch
+            }
+            problem = runCatching { cloud.signInFromHome(held); null }.getOrElse { e ->
+                if (e is Refused) R.string.cloud_refused else R.string.cloud_unreachable
+            }
+        }
+    }
 
     fun keep(a: Account) {
         scope.launch {
@@ -81,9 +117,22 @@ fun NextcloudScreen(cloud: Cloud, onBack: () -> Unit) {
         PagedColumn(modifier = Modifier.padding(padding).fillMaxSize(), contentPadding = PaddingValues(horizontal = 20.dp), showCutRow = true) {
             item { Spacer(Modifier.height(8.dp)) }
             val a = account
-            if (a != null) {
+            val fromHome = homeWho != null
+            if (a == null && fromHome) {
+                // Home signed out (or is gone): so is this app, quietly, until the same account is back there.
+                item(key = "home_signed_out") {
+                    Note(stringResource(R.string.home_account_signed_out, stringResource(R.string.home_account_what)))
+                }
+                item(key = "home_stop") { SettingRow(stringResource(R.string.home_account_stop), null) { cloud.signOut() } }
+            } else if (a != null) {
                 item(key = "account") {
-                    SettingRow(stringResource(R.string.cloud_account), stringResource(R.string.cloud_signed_in, a.user, a.server.removePrefix("https://")), onClick = null)
+                    val server = a.server.removePrefix("https://")
+                    SettingRow(
+                        stringResource(R.string.cloud_account),
+                        if (fromHome) stringResource(R.string.home_account_in_use, a.user, server)
+                        else stringResource(R.string.cloud_signed_in, a.user, server),
+                        onClick = null,
+                    )
                 }
                 item(key = "sync") {
                     val status = when (state) {
@@ -105,11 +154,22 @@ fun NextcloudScreen(cloud: Cloud, onBack: () -> Unit) {
                     item(key = "use") { WideButton(stringResource(R.string.cloud_use_folder), filled = true) { cloud.setFolder(newFolder) } }
                 }
                 item(key = "folder_note") { Note(stringResource(R.string.cloud_folder_note)) }
-                item(key = "out") {
-                    ArmedRow(stringResource(R.string.cloud_sign_out), stringResource(R.string.cloud_sign_out_armed)) { cloud.signOut() }
+                if (fromHome) {
+                    item(key = "home_stop") { SettingRow(stringResource(R.string.home_account_stop), null) { cloud.signOut() } }
+                } else {
+                    if (homeAvailable) {
+                        item(key = "home_use") { SettingRow(stringResource(R.string.home_account_use), null) { useHome() } }
+                    }
+                    problem?.let { p -> item(key = "problem") { Note(stringResource(p)) } }
+                    item(key = "out") {
+                        ArmedRow(stringResource(R.string.cloud_sign_out), stringResource(R.string.cloud_sign_out_armed)) { cloud.signOut() }
+                    }
                 }
             } else {
                 item(key = "explain") { Note(stringResource(R.string.cloud_explain)) }
+                if (homeAvailable) {
+                    item(key = "home_use") { SettingRow(stringResource(R.string.home_account_use), null) { useHome() } }
+                }
                 item(key = "server") {
                     Field(stringResource(R.string.cloud_server), server, { server = it; problem = null; cloud.clearSignInProblem() }, hint = stringResource(R.string.cloud_server_hint), url = true)
                 }

@@ -167,6 +167,11 @@
     <string name="cloud_server">Server address</string>
     <string name="cloud_server_hint" translatable="false">cloud.example.org</string>
     <string name="cloud_sign_in">Sign in</string>
+    <string name="home_account_use">Use the phone\'s Nextcloud account</string>
+    <string name="home_account_in_use">%1$s on %2$s, from Home.</string>
+    <string name="home_account_stop">Stop using it</string>
+    <string name="home_account_signed_out">Home is signed out of Nextcloud, so this app is too. Your %1$s stay on the phone.</string>
+    <string name="home_account_what">recipes</string>
     <string name="cloud_type_password">Type an app password instead</string>
     <string name="cloud_user">Login name</string>
     <string name="cloud_app_password">App password</string>

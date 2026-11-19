@@ -8,7 +8,8 @@
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
 
     <queries>
-        <!-- Home, whose dark mode switch this app follows when Home is installed. -->
+        <!-- Home, whose dark mode switch this app follows when Home is installed, and whose Nextcloud
+             account it can use (sync/HomeAccount.kt). -->
         <package android:name="com.wanderwildwood.iori" />
         <!-- Notes, which takes the shopping list. -->
         <package android:name="com.wanderwildwood.oboegaki" />

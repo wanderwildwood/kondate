@@ -11,6 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import com.mudita.mmd.ThemeMMD
 import com.wanderwildwood.kondate.importer.Reader
 import com.wanderwildwood.kondate.sync.Cloud
+import com.wanderwildwood.kondate.sync.HomeAccount
 import com.wanderwildwood.kondate.ui.Incoming
 import com.wanderwildwood.kondate.ui.RecipesApp
 import com.wanderwildwood.kondate.ui.houseTypography
@@ -21,6 +22,8 @@ class MainActivity : ComponentActivity() {
 
     /** What the latest intent brought, until the app has taken it. */
     private val incoming = mutableStateOf<Incoming?>(null)
+
+    private var stopObservingHome: () -> Unit = {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +53,16 @@ class MainActivity : ComponentActivity() {
     override fun onStart() {
         super.onStart()
         // Nothing happens here unless the reader has signed in to a Nextcloud.
-        Cloud.get(this).onOpen()
+        val cloud = Cloud.get(this)
+        cloud.onOpen()
+        // An account taken from Home is asked after again whenever Home says it changed.
+        stopObservingHome = HomeAccount.observe(this) { cloud.followHome() }
+    }
+
+    override fun onStop() {
+        stopObservingHome()
+        stopObservingHome = {}
+        super.onStop()
     }
 
     override fun onNewIntent(intent: Intent) {
