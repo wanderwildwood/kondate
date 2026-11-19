@@ -24,6 +24,7 @@ import com.mudita.mmd.components.top_app_bar.TopAppBarMMD
 import com.wanderwildwood.kondate.R
 import com.wanderwildwood.kondate.data.Store
 import com.wanderwildwood.kondate.sync.Cloud
+import com.wanderwildwood.kondate.sync.shownServer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -79,7 +80,7 @@ fun SettingsScreen(store: Store, onBack: () -> Unit, onAbout: () -> Unit, onOpen
                 val a = account
                 SettingRow(
                     stringResource(R.string.cloud_title),
-                    if (a == null) stringResource(R.string.cloud_off) else stringResource(R.string.cloud_signed_in, a.user, a.server.removePrefix("https://")),
+                    if (a == null) stringResource(R.string.cloud_off) else stringResource(R.string.cloud_signed_in, a.user, shownServer(a.server)),
                     onClick = onNextcloud,
                 )
             }

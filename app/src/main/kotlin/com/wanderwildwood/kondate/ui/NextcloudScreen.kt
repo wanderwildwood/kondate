@@ -29,6 +29,7 @@ import com.mudita.mmd.components.top_app_bar.TopAppBarMMD
 import com.wanderwildwood.kondate.R
 import com.wanderwildwood.kondate.sync.Account
 import com.wanderwildwood.kondate.sync.Cloud
+import com.wanderwildwood.kondate.sync.shownServer
 import com.wanderwildwood.kondate.sync.HomeAccount
 import com.wanderwildwood.kondate.sync.LoginFlow
 import com.wanderwildwood.kondate.sync.Refused
@@ -126,7 +127,7 @@ fun NextcloudScreen(cloud: Cloud, onBack: () -> Unit) {
                 item(key = "home_stop") { SettingRow(stringResource(R.string.home_account_stop), null) { cloud.signOut() } }
             } else if (a != null) {
                 item(key = "account") {
-                    val server = a.server.removePrefix("https://")
+                    val server = shownServer(a.server)
                     SettingRow(
                         stringResource(R.string.cloud_account),
                         if (fromHome) stringResource(R.string.home_account_in_use, a.user, server)

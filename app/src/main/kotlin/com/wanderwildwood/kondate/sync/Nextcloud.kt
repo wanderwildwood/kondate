@@ -13,15 +13,30 @@ import java.util.concurrent.TimeUnit
 /**
  * A Nextcloud account as its login page hands it over: the server, the user's login name and an
  * app password made for this phone alone, which can be revoked from the server's security
- * settings without touching the real one.
+ * settings without touching the real one. [user] (the login name) is what the app signs in with;
+ * [uid] is the Nextcloud user id, which can differ from it (an email address, another case) and
+ * is what the file paths are built with (`/remote.php/dav/files/<uid>/`).
  */
-data class Account(val server: String, val user: String, val password: String) {
-    fun toJson(): JSONObject = JSONObject().put("server", server).put("user", user).put("password", password)
+data class Account(val server: String, val user: String, val password: String, val uid: String = user) {
+    fun toJson(): JSONObject = JSONObject().put("server", server).put("user", user).put("password", password).put("uid", uid)
+
+    /** Without the password, so it cannot end up in a log. */
+    override fun toString(): String = "Account(server=$server, user=$user, uid=$uid)"
 
     companion object {
-        fun fromJson(o: JSONObject) = Account(o.getString("server"), o.getString("user"), o.getString("password"))
+        /** An account kept before the user id was kept reads with the login name as its user id. */
+        fun fromJson(o: JSONObject): Account {
+            val user = o.getString("user")
+            return Account(o.getString("server"), user, o.getString("password"), o.optString("uid").ifEmpty { user })
+        }
     }
 }
+
+/**
+ * [server] as it is shown: without "https://" or "http://", without a default port (one that is
+ * not the default is kept) or a slash at the end. The same for Home's account and the app's own.
+ */
+fun shownServer(server: String): String = HomeAccount.sameServer(server).substringAfter("://")
 
 /**
  * What to do with the stored account text: the sealed form is opened; the plain JSON an older
@@ -189,3 +204,21 @@ object CookbookApp {
         }
     }
 }
+
+/**
+ * The Nextcloud user id of [account], from OCS (`/ocs/v2.php/cloud/user`, `ocs.data.id`), signed
+ * in with the login name; null when the server does not say. The login name can be an email
+ * address or differ in case from the user id, and the file paths take the user id.
+ */
+fun userId(account: Account, client: OkHttpClient = http): String? = runCatching {
+    val request = Request.Builder().url("${account.server.trimEnd('/')}/ocs/v2.php/cloud/user?format=json")
+        .header("Authorization", Credentials.basic(account.user, account.password, Charsets.UTF_8))
+        .header("OCS-APIRequest", "true")
+        .header("User-Agent", AGENT)
+        .header("Accept", "application/json")
+        .build()
+    client.newCall(request).execute().use { r ->
+        if (!r.isSuccessful) return null
+        JSONObject(r.body!!.string()).getJSONObject("ocs").getJSONObject("data").optString("id").trim().takeIf { it.isNotEmpty() }
+    }
+}.getOrNull()

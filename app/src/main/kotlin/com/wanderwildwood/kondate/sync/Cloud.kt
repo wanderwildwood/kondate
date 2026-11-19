@@ -117,9 +117,20 @@ class Cloud private constructor(context: Context) {
         // Stopped using it (signOut, which does not wait for the lock) while Home was asked.
         if (_homeWho.value != who) return false
         return when (val step = HomeAccount.follow(who, stamp, answer)) {
-            is HomeAccount.Step.Keep -> false
+            is HomeAccount.Step.Keep -> {
+                // The same account and password, but Home has since learnt the user id (an
+                // account Home kept before it asked for one): the paths take it from now on.
+                val held = (answer as? HomeAccount.Answer.Has)?.held
+                val now = _account.value
+                if (held != null && now != null && now.uid != held.uid && now.user == held.user) {
+                    val a = now.copy(uid = held.uid)
+                    Secrets.seal(a.toJson().toString())?.let { prefs.edit().putString(ACCOUNT, it).apply() }
+                    _account.value = a
+                }
+                false
+            }
             is HomeAccount.Step.Take -> {
-                val a = Account(step.held.server, step.held.user, step.held.password)
+                val a = Account(step.held.server, step.held.user, step.held.password, step.held.uid)
                 val sealed = Secrets.seal(a.toJson().toString())
                 prefs.edit().apply { if (sealed != null) putString(ACCOUNT, sealed) else remove(ACCOUNT) }
                     .putString(HOME_STAMP, step.held.stamp).apply()
@@ -210,10 +221,13 @@ class Cloud private constructor(context: Context) {
      * together. Throws [Refused] or [Unreachable] when the account will not do. With [home], the
      * account is Home's, followed from now on ([followHome]); without, any choice of Home's is let go.
      */
-    suspend fun signIn(a: Account, home: HomeAccount.Held? = null) {
-        val folder = withContext(Dispatchers.IO) {
-            NextcloudFolder(a, DEFAULT_FOLDER).probe()
-            CookbookApp.folder(a) ?: DEFAULT_FOLDER
+    suspend fun signIn(given: Account, home: HomeAccount.Held? = null) {
+        val (a, folder) = withContext(Dispatchers.IO) {
+            // The app's own sign-in has only the login name: the server says the user id the
+            // file paths take. Home's account comes with its user id.
+            val checked = if (home == null) userId(given)?.let { given.copy(uid = it) } ?: given else given
+            NextcloudFolder(checked, DEFAULT_FOLDER).probe()
+            checked to (CookbookApp.folder(checked) ?: DEFAULT_FOLDER)
         }
         lock.withLock {
             // Only the sealed form is ever written; with no keystore the account lasts this run only.
@@ -295,7 +309,7 @@ class Cloud private constructor(context: Context) {
      * one typed in would be, in place of the app's own sign-in, and followed from now on.
      */
     suspend fun signInFromHome(held: HomeAccount.Held) {
-        signIn(Account(held.server, held.user, held.password), held)
+        signIn(Account(held.server, held.user, held.password, held.uid), held)
     }
 
     /**

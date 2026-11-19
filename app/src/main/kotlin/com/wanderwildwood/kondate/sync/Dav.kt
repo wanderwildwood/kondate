@@ -67,7 +67,7 @@ interface Remote {
 }
 
 /**
- * The recipe folder in a Nextcloud, over WebDAV: `remote.php/dav/files/<user>/<folder>/`, one
+ * The recipe folder in a Nextcloud, over WebDAV: `remote.php/dav/files/<uid>/<folder>/` (the user id, [Account.uid]; signed in with the login name), one
  * folder per recipe inside, as Cookbook keeps them. Nextcloud keeps an etag for every file and
  * folder, says the new one after a write, honours If-Match and If-None-Match, and gives every
  * file and folder an id that a rename keeps, which is everything this leans on.
@@ -78,7 +78,7 @@ class NextcloudFolder(
     private val client: OkHttpClient = http,
 ) : Remote {
 
-    private val home = account.server.trimEnd('/') + "/remote.php/dav/files/" + encodePath(account.user) + "/"
+    private val home = filesHome(account)
     private val folder = folder.trim('/', ' ')
     private val root = home + encodePath(this.folder) + "/"
 
@@ -251,6 +251,10 @@ class NextcloudFolder(
     /** Nothing at that path. Inside this file only. */
     private class Missing : IOException("not there")
 }
+
+/** Where [account]'s files are: built with the user id, never the login name. */
+internal fun filesHome(account: Account): String =
+    account.server.trimEnd('/') + "/remote.php/dav/files/" + encodePath(account.uid) + "/"
 
 /** One entry of a WebDAV listing. [path] is decoded; a folder's ends in "/". */
 data class Entry(val path: String, val etag: String?, val isFolder: Boolean, val fileId: String?)
