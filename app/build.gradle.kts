@@ -18,8 +18,8 @@ android {
         // that: Supernote's tablets run Android 11 (API 30), and it installs there too.
         minSdk = 30
         targetSdk = 31
-        versionCode = 27
-        versionName = "0.2.25"
+        versionCode = 28
+        versionName = "0.2.26"
 
         ndk {
             // The Kompakt is arm64. The emulator an x86_64 debug build is tried on is added
