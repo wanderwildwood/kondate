@@ -95,7 +95,11 @@ fun RecipeScreen(store: Store, id: String, onBack: () -> Unit, onEdit: () -> Uni
             )
         },
     ) { padding ->
-        PagedColumn(modifier = Modifier.padding(padding).fillMaxSize(), contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 20.dp), showCutRow = true) {
+        // Long free text (an imported step, notes) in rows of whole lines, so a turn never opens on half a line.
+        val fit = rememberWholeLineFit()
+        val small = MaterialTheme.typography.bodySmall
+        val body = MaterialTheme.typography.bodyMedium
+        PagedColumn(modifier = Modifier.padding(padding).fillMaxSize().wholeLinePage(fit), contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 20.dp), showCutRow = true) {
             item(key = "name") {
                 TextMMD(
                     text = recipe.name.ifBlank { stringResource(R.string.untitled) },
@@ -104,8 +108,8 @@ fun RecipeScreen(store: Store, id: String, onBack: () -> Unit, onEdit: () -> Uni
                 )
             }
             if (recipe.description.isNotBlank()) {
-                item(key = "description") {
-                    TextMMD(text = recipe.description, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(bottom = 4.dp))
+                wholeLineItems("description", recipe.description, small, fit, gap = 4.dp) { run, _, textModifier ->
+                    TextMMD(text = run, style = small, modifier = Modifier.padding(bottom = 4.dp).then(textModifier))
                 }
             }
             val times = Words.times(context, recipe)
@@ -168,12 +172,16 @@ fun RecipeScreen(store: Store, id: String, onBack: () -> Unit, onEdit: () -> Uni
                         }
                     }
                     section = step.section
-                    item(key = "m$i") { MethodStep(i + 1, step.text) }
+                    wholeLineItems("m$i", step.text, body, fit, gap = 12.dp) { run, part, textModifier ->
+                        MethodStep(if (part == 0) i + 1 else null, run, textModifier)
+                    }
                 }
             }
             if (recipe.notes.isNotBlank()) {
                 item(key = "notes-h") { Heading(stringResource(R.string.notes)) }
-                item(key = "notes") { TextMMD(text = recipe.notes, style = MaterialTheme.typography.bodyMedium) }
+                wholeLineItems("notes", recipe.notes, body, fit) { run, _, textModifier ->
+                    TextMMD(text = run, style = body, modifier = textModifier)
+                }
             }
             if (recipe.url.isNotBlank()) {
                 item(key = "source") {
@@ -237,10 +245,11 @@ private fun Ingredient(text: String, ticked: Boolean, onTick: () -> Unit) {
 
 /** A numbered step of the method. */
 @Composable
-private fun MethodStep(number: Int, text: String) {
+private fun MethodStep(number: Int?, text: String, textModifier: Modifier = Modifier) {
+    // A step cut into runs of whole lines (wholeLineItems) numbers its first run only; the rest keep the indent.
     Row(Modifier.fillMaxWidth().padding(vertical = 6.dp), horizontalArrangement = Arrangement.Start) {
-        TextMMD(text = "$number.", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, modifier = Modifier.widthIn(min = 30.dp))
-        TextMMD(text = text, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
+        TextMMD(text = number?.let { "$it." } ?: "", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, modifier = Modifier.widthIn(min = 30.dp))
+        TextMMD(text = text, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f).then(textModifier))
     }
 }
 
