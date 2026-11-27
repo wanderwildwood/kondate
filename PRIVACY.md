@@ -31,7 +31,10 @@ save every recipe to a file you choose, with the ingredients ticked in each, and
 from one.
 
 If Home (`com.wanderwildwood.iori`) is installed, Recipes asks it whether its dark switch is on,
-so the two follow one switch. That is all it reads from Home, and it sends Home nothing.
+so the two follow one switch. If Home is signed in to a
+Nextcloud and you choose "Use the phone's Nextcloud account", Recipes also asks Home for that
+account, after checking that the app answering really is Home, by its signing certificate. It keeps only that choice; the password stays Home's, is asked for when it is needed, and is let go when Home signs out.
+It sends Home nothing.
 
 It hands something to another app only when you press for it: a shopping list to Memo (or, with
 no Memo on the phone, to the app you pick), a timer to the clock app, a recipe as text or a file
