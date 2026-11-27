@@ -124,7 +124,8 @@ until you delete them there.
 
 Everything else stays on the phone, in the app's own storage: the recipes, which ingredients are
 ticked, and, when you are signed in, the Nextcloud address, login name and the app password it
-gave this phone. There are no accounts of the app's own, no analytics and no ads. The app does not back itself up;
+gave this phone. With the phone's Nextcloud account in use, the app keeps only that choice, and
+asks Home for the account when it is needed. There are no accounts of the app's own, no analytics and no ads. The app does not back itself up;
 uninstalling it removes everything, so save your recipes to a file first if you want them.
 
 A timer goes to the clock app and a shopping list to Memo only when you press for one. The
