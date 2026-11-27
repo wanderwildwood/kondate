@@ -61,6 +61,10 @@ hands the phone an app password of its own, which can be revoked from the server
 settings without touching your real one. A phone with no browser can take an app password typed
 in instead. The folder starts as Cookbook's own (it asks Cookbook which), and can be changed.
 
+Where Home is signed in to a Nextcloud, **Use the phone's Nextcloud account** takes that account
+instead, with no password to type. **Stop using it** goes back to the app's own sign-in, and when
+Home signs out so does Recipes, with the recipes kept on the phone.
+
 The layout is Cookbook's: one folder per recipe, named after the recipe, holding `recipe.json`.
 A recipe syncs when the app is opened, a few seconds after it is saved or deleted, when you
 press Sync now, and when the recipe list is pulled down from its top (a line above it says
